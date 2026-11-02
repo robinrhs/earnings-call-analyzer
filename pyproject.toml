@@ -1,0 +1,48 @@
+[project]
+name = "earnings-call-analyzer"
+version = "0.1.0"
+description = "Turn an earnings call transcript into a structured analyst brief with Claude, where every claim carries a verbatim quote that is checked against the transcript."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Robin-Philip Rehschuh" }]
+requires-python = ">=3.11"
+keywords = ["finance", "earnings-calls", "equity-research", "llm", "claude", "nlp"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "anthropic>=0.60",
+    "jinja2>=3.1",
+    "pydantic>=2.7",
+    "pypdf>=4.0",
+]
+
+[project.scripts]
+earnings-call-analyzer = "earnings_call_analyzer.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/earnings_call_analyzer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]

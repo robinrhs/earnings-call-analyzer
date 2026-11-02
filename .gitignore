@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Environments and secrets
+.venv/
+.env
+.env.*
+!.env.example
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Generated reports (the curated example lives in examples/output/)
+reports/
+output/
+!examples/output/
+
+# Real transcripts belong on your machine only, never in the repo
+transcripts/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
