@@ -1,16 +1,25 @@
+from pathlib import Path
+
 import pytest
 
 from earnings_call_analyzer.compare import (
-    compare_guidance,
+    _compare_values,
+    compare_briefs,
     compare_risks,
     compare_tone,
     metric_key,
     midpoint,
     pair_figures,
-    parse_amounts,
+    parse_guidance,
     period_key,
 )
+from earnings_call_analyzer.compare import compare_guidance as _compare_guidance
+from earnings_call_analyzer.llm import load_replay
 from earnings_call_analyzer.schema import Evidence, GuidanceItem, HeadlineFigure, Risk
+from earnings_call_analyzer.transcript import load_transcript
+from earnings_call_analyzer.verify import verify_brief
+
+EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
 
 EV = Evidence(paragraph_id="P001", quote="placeholder quote with enough words in it")
 
@@ -29,25 +38,124 @@ def fig(metric, value):
     return HeadlineFigure(metric=metric, value=value, period="Q3", comparison=None, evidence=EV)
 
 
+def compare_guidance(*args, **kwargs):
+    changes, _warnings = _compare_guidance(*args, **kwargs)
+    return changes
+
+
 # --- parsing ----------------------------------------------------------------------------
 
 
-def test_parse_amounts_scales_to_millions_and_inherits_range_unit():
-    assert parse_amounts("$1.62 to $1.66 billion") == ([1620.0, 1660.0], "money")
-    assert parse_amounts("$120 million to $135 million") == ([120.0, 135.0], "money")
-    assert parse_amounts("approximately 15%") == ([15.0], "percent")
-    assert parse_amounts("no numbers here") == ([], None)
+def span(text, metric=""):
+    guided = parse_guidance(text, metric)
+    return None if guided is None else (guided.low, guided.high, guided.kind)
+
+
+def test_parse_guidance_scales_to_millions_and_inherits_range_unit():
+    assert span("$1.62 to $1.66 billion") == (1620.0, 1660.0, "millions")
+    assert span("$120 million to $135 million") == (120.0, 135.0, "millions")
+    assert span("approximately 15%") == (15.0, 15.0, "percent")
+    assert span("no numbers here") is None
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        # Period labels and years inside the string are not part of the range.
+        ("$1.60 billion to $1.65 billion for fiscal 2026", (1600.0, 1650.0, "millions")),
+        ("$435 million to $450 million in Q4", (435.0, 450.0, "millions")),
+        ("for FY2026, $1.6 billion to $1.7 billion", (1600.0, 1700.0, "millions")),
+        # Signs: a minus, accounting brackets, or loss/decline wording.
+        ("-4% to -2%", (-4.0, -2.0, "percent")),
+        ("(3)% to (1)%", (-3.0, -1.0, "percent")),
+        ("an operating loss of $20 million to $10 million", (-20.0, -10.0, "millions")),
+        ("a decline of 2% to 4%", (-4.0, -2.0, "percent")),
+        # Only the first range counts; "up 8% to 10%" is a second figure.
+        ("$1.6 billion, up 8% to 10%", (1600.0, 1600.0, "millions")),
+        # Per-share and other non-money amounts keep their own kind.
+        ("EPS of $2.10 to $2.20", (2.10, 2.20, "currency")),
+        ("margin expansion of 50 to 100 bps", (50.0, 100.0, "bps")),
+        ("net leverage below 2.5x", (2.5, 2.5, "multiple")),
+        ("three new plants in 2 regions", None),
+    ],
+)
+def test_parse_guidance_edge_cases(text, expected):
+    assert span(text) == expected
+
+
+def test_loss_in_the_metric_name_makes_the_range_negative():
+    assert span("$20 million to $10 million", "Operating loss") == (-20.0, -10.0, "millions")
 
 
 def test_midpoint():
-    assert midpoint("$1.58 billion to $1.63 billion") == (1605.0, "money")
-    assert midpoint("$1,620 million to $1,660 million") == (1640.0, "money")
+    assert midpoint("$1.58 billion to $1.63 billion") == (1605.0, "millions")
+    assert midpoint("$1,620 million to $1,660 million") == (1640.0, "millions")
+
+
+@pytest.mark.parametrize(
+    ("previous", "current", "kind", "detail"),
+    [
+        ("-4% to -2%", "-1% to 1%", "raised", "Midpoint -3% -> 0% (+3 pp)."),
+        (
+            "an operating loss of $20 million to $10 million",
+            "an operating loss of $40 million to $30 million",
+            "lowered",
+            "Midpoint -15 -> -35 million (-20 million).",
+        ),
+        ("flat, about 0%", "growth of 4%", "raised", "Midpoint 0% -> 4% (+4 pp)."),
+        ("about 0%", "about 0%", "maintained", "Midpoint unchanged."),
+        (
+            "$1.6 billion, up 8% to 10%",
+            "$1.7 billion, up 8% to 10%",
+            "raised",
+            "Midpoint 1,600 -> 1,700 million (+100 million, +6.2%).",
+        ),
+        (
+            "EPS of $2.10 to $2.20",
+            "EPS of $2.30 to $2.40",
+            "raised",
+            "Midpoint $2.15 -> $2.35 (+$0.20, +9.3%).",
+        ),
+        (
+            "$1.60 billion to $1.65 billion for fiscal 2026",
+            "$1.62 billion to $1.66 billion for fiscal 2026",
+            "raised",
+            "Midpoint 1,625 -> 1,640 million (+15 million, +0.9%).",
+        ),
+        ("$1.6 billion", "15%", "changed", "Not comparable as numbers."),
+    ],
+)
+def test_compare_values(previous, current, kind, detail):
+    assert _compare_values(previous, current) == (kind, detail)
+
+
+def test_other_figures_in_the_wording_are_flagged():
+    kind, detail = _compare_values("$1.6 billion, up 8%", "$1.6 billion, up 4%")
+    assert kind == "maintained"
+    assert "Other figures in the wording differ" in detail
 
 
 def test_period_and_metric_keys():
     assert period_key("FY2026") == period_key("fiscal year 2026") == "FY 2026"
     assert period_key("Q4 FY2026") == period_key("fourth quarter of fiscal 2026") == "Q4 2026"
+    assert period_key("H2 FY2026") == period_key("second half of fiscal 2026") == "H2 2026"
+    assert period_key("first half 2026") == "H1 2026"
+    assert period_key("calendar 2026") == period_key("CY2026") == "CY 2026"
     assert metric_key("Full-year revenue") == metric_key("Revenue")
+
+
+def test_half_year_guidance_does_not_overwrite_full_year():
+    previous = [g("Revenue", "FY2026", "$1.6 billion"), g("Revenue", "H2 FY2026", "$0.8 billion")]
+    current = [g("Revenue", "FY2026", "$1.6 billion"), g("Revenue", "H2 FY2026", "$0.9 billion")]
+    changes = {c.period: c.change for c in compare_guidance(previous, current, "Q2", [])}
+    assert changes == {"FY2026": "maintained", "H2 FY2026": "raised"}
+
+
+def test_duplicate_guidance_key_is_warned_not_overwritten():
+    current = [g("Revenue", "FY2026", "$1.6 billion"), g("Revenue", "fiscal 2026", "$1.7 billion")]
+    changes, warnings = _compare_guidance([], current, "Q3", [], previous_period="Q2")
+    assert [c.current for c in changes] == ["$1.6 billion"]
+    assert len(warnings) == 1 and "Only the first is compared" in warnings[0]
 
 
 # --- guidance ---------------------------------------------------------------------------
@@ -132,6 +240,16 @@ def test_risks_new_persisting_dropped():
     }
 
 
+def test_category_only_risk_pairings_are_labelled():
+    previous = [risk("Component lead times", "costs_supply_chain"), risk("Wage costs", "execution")]
+    current = [
+        risk("Inventory build", "costs_supply_chain"),
+        risk("Wage costs rising", "execution"),
+    ]
+    matched = {r.category: r.matched_on for r in compare_risks(previous, current)}
+    assert matched == {"costs_supply_chain": "category", "execution": "title"}
+
+
 def test_other_category_needs_similar_titles():
     previous = [risk("Litigation over patents", "other")]
     current = [risk("Patents litigation risk", "other"), risk("CEO succession", "other")]
@@ -154,3 +272,58 @@ def test_pair_figures():
         ("Revenue", "$1", "$3"),
         ("EBITDA", "$2", None),
     ]
+
+
+# --- whole briefs: only trustworthy items are compared ----------------------------------
+
+
+@pytest.fixture(scope="module")
+def fernhill():
+    briefs = {}
+    for quarter in ("q2", "q3"):
+        transcript = load_transcript(EXAMPLES / f"fernhill_{quarter}_fy2026.txt")
+        brief = load_replay(EXAMPLES / "replay" / f"fernhill_{quarter}_fy2026.json").brief
+        briefs[quarter] = (brief, transcript)
+    return briefs
+
+
+def test_guidance_with_a_number_warning_is_not_compared(fernhill):
+    (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
+    # A real quote, but the model typed a range that is not in the paragraph.
+    wrong = q3.model_copy(deep=True)
+    wrong.guidance[0].current = "$1.70 billion to $1.74 billion"
+    current = verify_brief(wrong, t3)
+    assert current.guidance[0].status == "verified" and current.guidance[0].warnings
+    comparison = compare_briefs(verify_brief(q2, t2), current)
+    revenue_fy = [c for c in comparison.guidance if (c.metric, c.period) == ("Revenue", "FY2026")]
+    assert [c.change for c in revenue_fy] == ["not_compared"]  # not "raised", not "dropped"
+    assert "Q3 FY2026 item failed the checks" in revenue_fy[0].detail
+    assert any("not compared" in w and "1.7" in w for w in comparison.warnings)
+
+
+def test_unverified_tone_is_not_compared(fernhill):
+    (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
+    fabricated = q3.model_copy(deep=True)
+    fabricated.tone.label = "confident"
+    fabricated.tone.evidence[0].quote = "We have never been more certain about the year ahead"
+    current = verify_brief(fabricated, t3)
+    assert current.tone.status == "unverified"
+    tone = compare_briefs(verify_brief(q2, t2), current).tone
+    assert tone.steps is None
+    assert tone.description.startswith("Not compared")
+
+
+def test_flagged_unverified_items_are_listed_as_not_compared(fernhill):
+    (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
+    comparison = compare_briefs(
+        verify_brief(q2, t2, policy="flag"), verify_brief(q3, t3, policy="flag")
+    )
+    assert any("Net revenue retention" in w and "unverified" in w for w in comparison.warnings)
+    assert all(f.metric != "Net revenue retention (software)" for f in comparison.figures)
+
+
+def test_clean_example_comparison_has_no_warnings(fernhill):
+    (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
+    comparison = compare_briefs(verify_brief(q2, t2), verify_brief(q3, t3))
+    assert comparison.warnings == []
+    assert comparison.tone.steps == 1
