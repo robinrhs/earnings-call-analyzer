@@ -9,12 +9,20 @@ python -m earnings_call_analyzer paragraphs call.txt     # check the parser firs
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
 
-from .llm import DEFAULT_MODEL, MODEL_ENV_VAR, LLMError, MissingApiKeyError, resolve_model
+from .llm import (
+    DEFAULT_MODEL,
+    MODEL_ENV_VAR,
+    LLMError,
+    MissingApiKeyError,
+    brief_json_schema,
+    resolve_model,
+)
 from .pipeline import (
     AnalysisResult,
     analyze_file,
@@ -22,7 +30,7 @@ from .pipeline import (
     write_brief_reports,
     write_comparison_reports,
 )
-from .pricing import PRICES_AS_OF, estimate_run
+from .pricing import OUTPUT_TOKENS_HIGH, OUTPUT_TOKENS_LOW, PRICES_AS_OF, estimate_run
 from .prompt import SYSTEM_PROMPT, build_user_message
 from .transcript import Transcript, load_transcript
 from .verify import VerificationSettings
@@ -120,15 +128,25 @@ def _parse_summary(transcript: Transcript, name: str) -> str:
     )
 
 
+def _usd(amount: float) -> str:
+    return f"${amount:.2f}" if amount >= 0.1 else f"${amount:.3f}"
+
+
 def _print_estimate(transcript: Transcript, model: str) -> None:
-    estimate = estimate_run(model, SYSTEM_PROMPT + build_user_message(transcript))
-    print(f"Estimated input: ~{estimate.input_tokens:,} tokens (rough: 4 characters per token).")
+    # The JSON schema is sent with the request as well, so it counts towards the input.
+    prompt = SYSTEM_PROMPT + build_user_message(transcript) + json.dumps(brief_json_schema())
+    estimate = estimate_run(model, prompt)
+    print(
+        f"Estimated input: ~{estimate.input_tokens:,} tokens "
+        "(prompt + transcript + schema, at roughly 4 characters per token)."
+    )
     if estimate.low_usd is None or estimate.high_usd is None:
         print(f"No list price on file for {model}; see pricing.py.")
         return
     print(
-        f"Estimated cost with {model}: ${estimate.low_usd:.2f} to ${estimate.high_usd:.2f} "
-        f"per run (4k-12k output tokens, list prices as of {PRICES_AS_OF})."
+        f"Estimated cost with {model}: {_usd(estimate.low_usd)} to {_usd(estimate.high_usd)} "
+        f"per run (assuming {OUTPUT_TOKENS_LOW:,}-{OUTPUT_TOKENS_HIGH:,} output tokens; "
+        f"list prices as of {PRICES_AS_OF})."
     )
 
 
