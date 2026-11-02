@@ -1,0 +1,36 @@
+# Quarter-over-quarter: {{ c.company }}, {{ c.previous_period }} vs {{ c.current_period }}
+
+> {{ disclaimer }}
+
+- Previous call: `{{ previous.source }}` (model `{{ previous.model }}`, {{ previous.generated_by }})
+- Current call: `{{ current.source }}` (model `{{ current.model }}`, {{ current.generated_by }})
+- Only items that passed quote verification are compared.
+
+## Tone
+
+{{ c.tone.description }}
+
+## Guidance
+
+| Metric | Period | Previous | Current | Change | Detail |
+|---|---|---|---|---|---|
+{% for g in c.guidance %}
+| {{ g.metric }} | {{ g.period }} | {{ g.previous or "-" }} | {{ g.current or "-" }} | **{{ g.change }}** | {{ g.detail }} |
+{% endfor %}
+
+## Risks
+
+{% for r in c.risks %}
+- **{{ r.change }}** ({{ r.category|risk_label }}): {% if r.change == "persisting" %}{{ r.current_title }} (previously: {{ r.previous_title }}){% else %}{{ r.current_title or r.previous_title }}{% endif %}
+
+{% else %}
+- No risks extracted.
+{% endfor %}
+
+## Headline figures side by side
+
+| Metric | {{ c.previous_period }} | {{ c.current_period }} |
+|---|---|---|
+{% for f in c.figures %}
+| {{ f.metric }} | {{ f.previous or "-" }} | {{ f.current or "-" }} |
+{% endfor %}

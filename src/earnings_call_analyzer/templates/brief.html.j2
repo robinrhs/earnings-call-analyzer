@@ -1,0 +1,98 @@
+{% from "_macros.html.j2" import badge, evidence, warnings %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ brief.company }} {{ brief.period }} brief</title>
+<style>
+{% include "_style.css" %}
+</style>
+</head>
+<body>
+<main>
+<h1>{{ brief.company }}: {{ brief.period }} earnings call brief</h1>
+<div class="meta">Source <code>{{ meta.source }}</code> &middot; model <code>{{ meta.model }}</code> &middot; {{ meta.generated_by }}</div>
+{% if meta.note %}<div class="meta">{{ meta.note }}</div>{% endif %}
+<p class="disclaimer">{{ disclaimer }}</p>
+
+<div class="summary">
+  <div class="stat"><b>{{ counts.verified }}</b><span class="badge verified">VERIFIED</span></div>
+  <div class="stat"><b>{{ counts.corrected }}</b><span class="badge corrected">CORRECTED</span></div>
+  <div class="stat"><b>{{ counts.unverified }}</b><span class="badge unverified">UNVERIFIED</span></div>
+</div>
+<p class="sub">Each quote is checked against the transcript: exact match, then normalised match, then the other paragraphs (to correct a wrong id), then a fuzzy match at similarity &ge; {{ "%.2f"|format(brief.fuzzy_threshold) }} with identical numbers. Unverified items are {{ "removed and listed at the end" if brief.policy == "drop" else "kept and flagged" }}.</p>
+
+<h2>Management tone: {{ brief.tone.item.label|capitalize }} <span class="badge {{ brief.tone.status }}">{{ brief.tone.status|upper }}</span></h2>
+<div class="item">
+<p>{{ brief.tone.item.justification }}</p>
+{% for ev, check in zip(brief.tone.item.evidence, brief.tone.checks) %}
+{{ evidence(check, ev.quote) }}
+{% endfor %}
+</div>
+
+<h2>Headline figures</h2>
+{% for f in brief.headline_figures %}
+<div class="item {{ f.status }}">
+<div class="headline">{{ f.item.metric }}: {{ f.item.value }}</div>
+<div class="sub">{{ f.item.period }}{% if f.item.comparison %} &middot; {{ f.item.comparison }}{% endif %}</div>
+{{ evidence(f.checks[0], f.item.evidence.quote) }}
+{{ warnings(f) }}
+</div>
+{% else %}<p class="sub">None extracted.</p>{% endfor %}
+
+<h2>Guidance</h2>
+{% for g in brief.guidance %}
+<div class="item {{ g.status }}">
+<div class="headline">{{ g.item.metric }}, {{ g.item.period }}: {{ g.item.current }}</div>
+<div class="sub">{{ g.item.direction|replace("_", " ") }}{% if g.item.prior %} &middot; prior: {{ g.item.prior }}{% endif %}</div>
+{{ evidence(g.checks[0], g.item.evidence.quote) }}
+{{ warnings(g) }}
+</div>
+{% else %}<p class="sub">None extracted.</p>{% endfor %}
+
+<h2>Key risks</h2>
+{% for r in brief.risks %}
+<div class="item {{ r.status }}">
+<div class="headline">{{ r.item.title }}</div>
+<div class="sub">{{ r.item.category|risk_label }}</div>
+<p>{{ r.item.description }}</p>
+{{ evidence(r.checks[0], r.item.evidence.quote) }}
+</div>
+{% else %}<p class="sub">None extracted.</p>{% endfor %}
+
+<h2>Analyst questions</h2>
+{% for q in brief.analyst_questions %}
+<div class="item {{ q.status }}">
+<h3>{{ q.item.topic }}</h3>
+<div class="sub">{{ q.item.analyst }}{% if q.item.firm %}, {{ q.item.firm }}{% endif %} &middot; answer: <b>{{ q.item.answer_quality }}</b></div>
+<p><b>Q:</b> {{ q.item.question_summary }}</p>
+{{ evidence(q.checks[0], q.item.question_evidence.quote) }}
+<p><b>A:</b> {{ q.item.answer_summary }}</p>
+{{ evidence(q.checks[1], q.item.answer_evidence.quote) }}
+{{ warnings(q) }}
+</div>
+{% else %}<p class="sub">None extracted.</p>{% endfor %}
+
+{% if brief.rejected %}
+<h2>Rejected by verification</h2>
+<p class="sub">Returned by the model, but the supporting quote was not found in the transcript. Not part of the brief.</p>
+{% for r in brief.rejected %}
+<div class="item unverified">
+<div class="headline">{{ r.section }}: {{ r.label }}</div>
+{% for check in r.checks if check.status == "unverified" %}
+<div class="note">Cited {{ check.cited_id }}. {{ check.note }}</div>
+{% endfor %}
+</div>
+{% endfor %}
+{% endif %}
+
+<h2>Transcript</h2>
+<div class="transcript">
+{% for p in transcript.paragraphs %}
+<p id="{{ p.id }}"{% if p.id in cited %} class="cited"{% endif %}><span class="pid">{{ p.id }}</span><b>{{ p.speaker or "Unknown" }}</b> <span class="sub">({{ p.role }}, {{ section_labels[p.section] }})</span><br>{{ p.text }}</p>
+{% endfor %}
+</div>
+</main>
+</body>
+</html>

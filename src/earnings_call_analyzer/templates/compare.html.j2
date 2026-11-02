@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ c.company }} {{ c.previous_period }} vs {{ c.current_period }}</title>
+<style>
+{% include "_style.css" %}
+</style>
+</head>
+<body>
+<main>
+<h1>{{ c.company }}: {{ c.previous_period }} vs {{ c.current_period }}</h1>
+<div class="meta">Previous <code>{{ previous.source }}</code> &middot; current <code>{{ current.source }}</code> &middot; model <code>{{ current.model }}</code> &middot; {{ current.generated_by }}</div>
+<p class="disclaimer">{{ disclaimer }} Only items that passed quote verification are compared.</p>
+
+<h2>Tone</h2>
+<p>{{ c.tone.description }}</p>
+
+<h2>Guidance</h2>
+<table>
+<thead><tr><th>Metric</th><th>Period</th><th>Previous</th><th>Current</th><th>Change</th></tr></thead>
+<tbody>
+{% for g in c.guidance %}
+<tr><td>{{ g.metric }}</td><td>{{ g.period }}</td><td class="num">{{ g.previous or "-" }}</td><td class="num">{{ g.current or "-" }}</td><td><span class="change-{{ g.change }}">{{ g.change }}</span><div class="note">{{ g.detail }}</div></td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Risks</h2>
+<table>
+<thead><tr><th>Status</th><th>Category</th><th>Risk</th></tr></thead>
+<tbody>
+{% for r in c.risks %}
+<tr><td><span class="change-{{ r.change }}">{{ r.change }}</span></td><td>{{ r.category|risk_label }}</td><td>{% if r.change == "persisting" %}{{ r.current_title }}<div class="note">previously: {{ r.previous_title }}</div>{% else %}{{ r.current_title or r.previous_title }}{% endif %}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>Headline figures side by side</h2>
+<table>
+<thead><tr><th>Metric</th><th>{{ c.previous_period }}</th><th>{{ c.current_period }}</th></tr></thead>
+<tbody>
+{% for f in c.figures %}
+<tr><td>{{ f.metric }}</td><td class="num">{{ f.previous or "-" }}</td><td class="num">{{ f.current or "-" }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</main>
+</body>
+</html>

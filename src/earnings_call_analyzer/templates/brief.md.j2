@@ -1,0 +1,72 @@
+{% from "_macros.md.j2" import evidence, warnings %}
+# Earnings call brief: {{ brief.company }}, {{ brief.period }}
+
+> {{ disclaimer }}
+
+- Source: `{{ meta.source }}`
+- Model: `{{ meta.model }}`, {{ meta.generated_by }}
+{% if meta.note %}
+- Note: {{ meta.note }}
+{% endif %}
+- Verification: {{ counts.verified + counts.corrected + counts.unverified }} quotes checked: {{ counts.verified }} verified, {{ counts.corrected }} corrected (wrong paragraph id fixed), {{ counts.unverified }} unverified. Unverified items are {{ "removed from the brief and listed under *Rejected by verification*" if brief.policy == "drop" else "kept and flagged" }}. Fuzzy threshold: {{ "%.2f"|format(brief.fuzzy_threshold) }}.
+
+## Management tone: {{ brief.tone.item.label|capitalize }} `{{ brief.tone.status|upper }}`
+
+{{ brief.tone.item.justification }}
+
+{% for ev, check in zip(brief.tone.item.evidence, brief.tone.checks) %}
+- {{ evidence(check, ev.quote) }}
+{% endfor %}
+
+## Headline figures
+
+{% for f in brief.headline_figures %}
+- **{{ f.item.metric }}: {{ f.item.value }}**{% if f.item.comparison %} ({{ f.item.comparison }}){% endif %}, {{ f.item.period }}
+  {{ evidence(f.checks[0], f.item.evidence.quote) }}{{ warnings(f) }}
+{% else %}
+- None extracted.
+{% endfor %}
+
+## Guidance
+
+{% for g in brief.guidance %}
+- **{{ g.item.metric }}, {{ g.item.period }}: {{ g.item.current }}** ({{ g.item.direction|replace("_", " ") }}{% if g.item.prior %}; prior: {{ g.item.prior }}{% endif %})
+  {{ evidence(g.checks[0], g.item.evidence.quote) }}{{ warnings(g) }}
+{% else %}
+- None extracted.
+{% endfor %}
+
+## Key risks
+
+{% for r in brief.risks %}
+- **{{ r.item.title }}** ({{ r.item.category|risk_label }}): {{ r.item.description }}
+  {{ evidence(r.checks[0], r.item.evidence.quote) }}
+{% else %}
+- None extracted.
+{% endfor %}
+
+## Analyst questions
+
+{% for q in brief.analyst_questions %}
+### {{ q.item.topic }} - {{ q.item.analyst }}{% if q.item.firm %} ({{ q.item.firm }}){% endif %}, answer: {{ q.item.answer_quality }}
+
+- Question: {{ q.item.question_summary }}
+  {{ evidence(q.checks[0], q.item.question_evidence.quote) }}
+- Answer: {{ q.item.answer_summary }}
+  {{ evidence(q.checks[1], q.item.answer_evidence.quote) }}{{ warnings(q) }}
+
+{% else %}
+- None extracted.
+{% endfor %}
+{% if brief.rejected %}
+## Rejected by verification
+
+These items were returned by the model but their quotes could not be found in the transcript, so they are not part of the brief.
+
+{% for r in brief.rejected %}
+- {{ r.section }}: {{ r.label }}
+{% for check in r.checks if check.status == "unverified" %}
+  - Cited {{ check.cited_id }}. {{ check.note }}
+{% endfor %}
+{% endfor %}
+{% endif %}

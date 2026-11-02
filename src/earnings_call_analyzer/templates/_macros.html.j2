@@ -1,0 +1,11 @@
+{% macro badge(check) -%}
+<span class="badge {{ check.status }}">{{ check|badge }}</span>
+{%- endmacro %}
+{% macro evidence(check, quote) -%}
+<blockquote>&ldquo;{{ quote }}&rdquo; {{ badge(check) }} <a href="#{{ check|shown_id }}">{{ check|shown_id }}</a></blockquote>
+{% if check.method in ("fuzzy", "normalized") %}<div class="note">Transcript reads: &ldquo;{{ check.matched_text }}&rdquo;</div>{% endif %}
+{% if check.status != "verified" %}<div class="note">{{ check.note }}</div>{% endif %}
+{%- endmacro %}
+{% macro warnings(item) -%}
+{% for w in item.warnings %}<div class="warning">Warning: {{ w }}</div>{% endfor %}
+{%- endmacro %}

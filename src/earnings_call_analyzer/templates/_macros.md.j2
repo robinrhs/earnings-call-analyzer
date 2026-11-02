@@ -1,0 +1,17 @@
+{% macro evidence(check, quote) -%}
+`{{ check|badge }}` {{ check|shown_id }}: "{{ quote }}"
+{%- if check.method in ("fuzzy", "normalized") %}
+
+    Transcript reads: "{{ check.matched_text }}"
+{%- endif %}
+{%- if check.status != "verified" %}
+
+    {{ check.note }}
+{%- endif %}
+{%- endmacro %}
+{% macro warnings(item) -%}
+{% for w in item.warnings %}
+
+    Warning: {{ w }}
+{%- endfor %}
+{%- endmacro %}
