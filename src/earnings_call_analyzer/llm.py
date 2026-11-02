@@ -160,15 +160,32 @@ def save_recording(path: str | Path, result: LLMResult, raw_text: str) -> None:
 
 
 def load_replay(path: str | Path) -> LLMResult:
-    """Load a recorded (or hand-authored) model response."""
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if data.get("format") != REPLAY_FORMAT:
+    """Load a recorded (or hand-authored) model response.
+
+    Every problem with the file is an :class:`LLMError` with the file name in it, so the
+    CLI prints one clean line instead of a traceback.
+    """
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise LLMError(f"{path} is not valid JSON: {exc}") from exc
+    if not isinstance(data, dict) or data.get("format") != REPLAY_FORMAT:
         raise LLMError(f"{path} is not a replay file (expected format '{REPLAY_FORMAT}').")
+    if "response" not in data:
+        raise LLMError(f"{path} has no 'response' field.")
     usage = data.get("usage")
+    try:
+        replay_usage = (
+            Usage(int(usage["input_tokens"]), int(usage["output_tokens"])) if usage else None
+        )
+    except (TypeError, KeyError, ValueError) as exc:
+        raise LLMError(
+            f"{path}: 'usage' must have integer input_tokens and output_tokens."
+        ) from exc
     return LLMResult(
         brief=parse_brief(json.dumps(data["response"])),
         model=str(data.get("model", "unknown")),
-        usage=Usage(**usage) if usage else None,
+        usage=replay_usage,
         source="replay",
         note=str(data.get("note", "")),
     )

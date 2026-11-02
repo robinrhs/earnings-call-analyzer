@@ -108,6 +108,14 @@ def test_unsupported_file_type_is_a_clean_error(tmp_path, capsys):
     assert "Unsupported transcript format" in capsys.readouterr().err
 
 
+def test_replay_without_response_is_a_clean_error(tmp_path, capsys):
+    replay = tmp_path / "empty.json"
+    replay.write_text('{"format": "earnings-call-analyzer/replay-v1"}')
+    code = main(["analyze", str(Q3), "--replay", str(replay), "--out-dir", str(tmp_path)])
+    assert code == 2
+    assert capsys.readouterr().err.strip() == f"Error: {replay} has no 'response' field."
+
+
 def test_paragraphs_command(capsys):
     assert main(["paragraphs", str(Q2)]) == 0
     out = capsys.readouterr().out

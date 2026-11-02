@@ -147,6 +147,25 @@ def test_replay_rejects_wrong_format(tmp_path):
         load_replay(path)
 
 
+@pytest.mark.parametrize(
+    ("content", "message"),
+    [
+        ('{"format": "earnings-call-analyzer/replay-v1"}', "has no 'response' field"),
+        ("[1, 2, 3]", "not a replay file"),
+        ("not json", "not valid JSON"),
+        (
+            '{"format": "earnings-call-analyzer/replay-v1", "usage": {"input": 1}, "response": {}}',
+            "'usage' must have integer input_tokens and output_tokens",
+        ),
+    ],
+)
+def test_broken_replay_files_raise_llm_error(tmp_path, content, message):
+    path = tmp_path / "broken.json"
+    path.write_text(content)
+    with pytest.raises(LLMError, match=message):
+        load_replay(path)
+
+
 def test_example_replay_files_are_valid():
     for name in ("fernhill_q2_fy2026.json", "fernhill_q3_fy2026.json"):
         result = load_replay(EXAMPLES / "replay" / name)
