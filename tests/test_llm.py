@@ -230,3 +230,83 @@ def test_cost_estimate():
 
 def test_default_model_has_a_price():
     assert DEFAULT_MODEL in PRICES_PER_MILLION
+
+
+def _sse(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+def test_request_goes_through_the_real_sdk_offline():
+    """The real anthropic client with a mock HTTP transport: catches SDK signature drift.
+
+    No network: httpx2.MockTransport answers in-process with a streamed reply.
+    """
+    anthropic = pytest.importorskip("anthropic")
+    httpx2 = pytest.importorskip("httpx2")
+    text = json.dumps(replay_brief())
+    seen: dict = {}
+
+    def handler(request):
+        seen["path"] = request.url.path
+        seen["beta"] = request.headers.get("anthropic-beta")
+        seen["body"] = json.loads(request.content)
+        message = {
+            "id": "msg_test",
+            "type": "message",
+            "role": "assistant",
+            "model": "claude-opus-5-5",
+            "content": [],
+            "stop_reason": None,
+            "stop_sequence": None,
+            "usage": {"input_tokens": 100, "output_tokens": 1},
+        }
+        events = [
+            _sse("message_start", {"type": "message_start", "message": message}),
+            _sse(
+                "content_block_start",
+                {
+                    "type": "content_block_start",
+                    "index": 0,
+                    "content_block": {"type": "text", "text": ""},
+                },
+            ),
+            _sse(
+                "content_block_delta",
+                {
+                    "type": "content_block_delta",
+                    "index": 0,
+                    "delta": {"type": "text_delta", "text": text},
+                },
+            ),
+            _sse("content_block_stop", {"type": "content_block_stop", "index": 0}),
+            _sse(
+                "message_delta",
+                {
+                    "type": "message_delta",
+                    "delta": {"stop_reason": "end_turn", "stop_sequence": None},
+                    "usage": {"output_tokens": 50},
+                },
+            ),
+            _sse("message_stop", {"type": "message_stop"}),
+        ]
+        return httpx2.Response(
+            200, headers={"content-type": "text/event-stream"}, content="".join(events).encode()
+        )
+
+    client = anthropic.Anthropic(
+        api_key="test-key",
+        http_client=httpx2.Client(transport=httpx2.MockTransport(handler)),
+        max_retries=0,
+    )
+    result, _ = call_claude(parse_transcript(CALL), "claude-opus-5-5", client=client)
+
+    assert seen["path"] == "/v1/messages"
+    assert seen["beta"] == "server-side-fallback-2026-07-01"
+    body = seen["body"]
+    assert body["fallbacks"] == "default"
+    assert body["stream"] is True
+    assert body["output_config"]["effort"] == "high"
+    assert body["output_config"]["format"]["type"] == "json_schema"
+    assert "betas" not in body and "thinking" not in body
+    assert result.brief == load_replay(EXAMPLES / "replay" / "fernhill_q3_fy2026.json").brief
+    assert (result.usage.input_tokens, result.usage.output_tokens) == (100, 50)
