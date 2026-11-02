@@ -1,0 +1,167 @@
+FICTIONAL EXAMPLE TRANSCRIPT - NOT A REAL COMPANY
+Fernhill Automation Inc. is invented for this repository. All names, figures, analysts and firms are made up. Nothing here describes a real company or is investment advice.
+
+Fernhill Automation Inc. (fictional)
+Third Quarter Fiscal 2026 Earnings Conference Call
+
+Call Participants
+
+Company:
+Dana Whitfield -- Chief Executive Officer
+Martin Okafor -- Chief Financial Officer
+Lena Brandt -- Head of Investor Relations
+
+Analysts:
+Priya Raman -- Halcyon Securities
+Marcus Oyelaran -- Ridgefield Partners
+Elena Sokolova -- Brightline Capital Markets
+Tom Achterberg -- Northgate Research
+Kenji Moreau -- Ashgrove & Lyle
+
+Prepared Remarks
+
+Operator
+
+Good morning and welcome to the Fernhill Automation third quarter fiscal 2026 earnings conference call. All participants are in a listen-only mode. After the prepared remarks there will be a question-and-answer session. I would now like to turn the call over to Lena Brandt, Head of Investor Relations.
+
+Lena Brandt -- Head of Investor Relations
+
+Thank you, operator, and good morning, everyone. With me today are Dana Whitfield, our Chief Executive Officer, and Martin Okafor, our Chief Financial Officer. Before we begin, please note that today's discussion contains forward-looking statements that are subject to risks and uncertainties, and actual results may differ materially. We will also refer to non-GAAP measures such as adjusted operating margin and free cash flow; reconciliations are in the earnings release. With that, I will hand it to Dana.
+
+Dana Whitfield -- Chief Executive Officer
+
+Thank you, Lena, and good morning. The third quarter was our strongest quarter to date. Revenue grew 14% year over year to $412.3 million, ahead of the top end of the range we gave you in July. Demand for our warehouse automation systems remained healthy in North America, and our recurring software business continued to compound.
+
+Annual recurring revenue from our Fernhill Orchestrate software platform reached $588 million at quarter end, up 22% from a year ago. Software now represents a little over a third of total revenue, and every system we install creates a long tail of subscription and service revenue. That mix shift is the single most important driver of our margin story.
+
+Orders were also strong. We booked $445 million of new orders in the quarter, which translates into a book-to-bill ratio of 1.08, and our backlog closed the quarter at a record $1.21 billion. Roughly 60% of that backlog is scheduled to convert to revenue over the next twelve months, which gives us good visibility into the fourth quarter and into fiscal 2027.
+
+Among the new orders, we signed two multi-site agreements with North American third-party logistics providers, each covering more than ten distribution centers, and our first project with a regional pharmaceutical distributor. Those wins matter because they are repeatable: once a customer has standardized on Fernhill at a few sites, the next sites are faster to sell and cheaper to install.
+
+I do want to be clear about two areas where conditions are tougher. First, Europe. Order intake from European grocery and apparel customers slowed in the quarter, and several customers pushed final investment decisions into next year. European orders were down 9% year over year. We are not seeing cancellations, but decision cycles are clearly longer, and we are planning conservatively for the region.
+
+Second, component costs. New tariffs on imported motion-control components took effect in August. We have secured supply for the next two quarters, but we pre-bought inventory to do so, and that ties up cash. We expect to offset most of the cost impact through pricing and sourcing changes by the middle of next year, but there will be a timing gap.
+
+Strategically, we launched Orchestrate 5 in September, which adds predictive maintenance and labor planning modules. Early adoption has been encouraging, with 41 existing customers signing upgrades in the first four weeks. We also opened our new integration center in Monterrey, Mexico, which will shorten installation times for customers in North America.
+
+On capital allocation, our priorities have not changed. We invest first in research and development and in our installation capacity, then in small, software-focused acquisitions, and we return excess cash to shareholders. During the quarter we repurchased $12 million of shares under the $50 million program the board approved in March.
+
+With that, let me hand over to Martin for the financial details.
+
+Martin Okafor -- Chief Financial Officer
+
+Thanks, Dana, and good morning, everyone. As Dana said, third quarter revenue was $412.3 million, up 14% from $361.7 million in the prior-year quarter. Systems revenue was $268.1 million, up 10%, and software and services revenue was $144.2 million, up 23%.
+
+By region, North America grew 21% and represented 68% of revenue. Europe declined 4% and represented 24% of revenue, and the rest of the world made up the remaining 8%. Because European projects are recognized over the installation period, the slowdown in European orders shows up in revenue with a lag of two to three quarters.
+
+Gross margin expanded to 47.8%, compared with 46.1% a year ago. The improvement came from the richer software mix and better project execution, partly offset by about 40 basis points of tariff-related component costs. Adjusted operating margin was 15.2%, up from 13.9% in the third quarter of last year. Adjusted earnings per share were $0.74, compared with $0.61 a year ago.
+
+Operating expenses were $134.4 million, or 32.6% of revenue, compared with 32.2% a year ago. The increase reflects higher research and development spending ahead of the Orchestrate 5 launch and the start-up costs of the Monterrey integration center. We expect operating expenses as a percentage of revenue to come down in the fourth quarter as those one-off costs roll off.
+
+Free cash flow was $38.5 million in the quarter. That is lower than we would normally expect at this revenue level, and the reason is the inventory build Dana described. We added roughly $31 million of component inventory ahead of the tariff changes. We ended the quarter with $214 million of cash and a net leverage ratio of 0.9 times adjusted EBITDA.
+
+Now to our outlook. Based on the strength of our backlog, we are raising our fiscal 2026 revenue guidance to a range of $1.62 billion to $1.66 billion, up from our prior range of $1.58 billion to $1.63 billion. We continue to expect an adjusted operating margin of approximately 15% for the full year.
+
+For the fourth quarter, we expect revenue in the range of $435 million to $450 million.
+
+We are lowering our fiscal 2026 free cash flow guidance to $120 million to $135 million, compared with our previous range of $140 million to $155 million. The reduction reflects the inventory investment and the timing of tariff costs, not a change in the underlying cash generation of the business. We expect working capital to normalize during the first half of fiscal 2027.
+
+With that, operator, please open the line for questions.
+
+Question-and-Answer Session
+
+Operator
+
+Thank you. We will now begin the question-and-answer session. Our first question comes from Priya Raman with Halcyon Securities. Please go ahead.
+
+Priya Raman -- Halcyon Securities
+
+Good morning, and congratulations on the quarter. Martin, I want to push on the cash flow guide. You are raising revenue but cutting free cash flow by about $20 million at the midpoint. How much of that is truly timing, and how confident are you that the inventory comes back out of the balance sheet next year?
+
+Martin Okafor -- Chief Financial Officer
+
+Thanks, Priya. Of the roughly $20 million reduction at the midpoint, about $15 million is the component inventory we pre-bought and about $5 million is tariff cost we have absorbed and not yet passed through. The inventory is allocated to specific projects in our backlog that ship in the first half of fiscal 2027, so we have line of sight on when it converts. I would call it timing, and we will report progress on it every quarter.
+
+Priya Raman -- Halcyon Securities
+
+That is helpful. Thank you. And just a quick follow-up: does the raised revenue range assume any price increases to offset the tariffs?
+
+Martin Okafor -- Chief Financial Officer
+
+It includes the price increases we have already announced, which took effect on new orders from September. It does not include anything further. Because of our backlog, most of the revenue we recognize in the fourth quarter was priced before the tariffs, so the pricing benefit builds mainly in fiscal 2027.
+
+Operator
+
+Our next question comes from Marcus Oyelaran with Ridgefield Partners. Please go ahead.
+
+Marcus Oyelaran -- Ridgefield Partners
+
+Thanks. Dana, on Europe, you said orders were down 9%. Is this a temporary pause, or are you seeing customers shift budgets away from automation altogether? And what are you assuming for Europe in the fourth quarter?
+
+Dana Whitfield -- Chief Executive Officer
+
+Good question, Marcus. What we hear from customers is that the projects are still on their roadmaps, but boards are asking for more certainty on interest rates and consumer demand before they commit. So it is a delay rather than a shift away from automation. For the fourth quarter guide we have assumed that European orders stay at roughly the third quarter level. I would not want to call the bottom yet.
+
+Marcus Oyelaran -- Ridgefield Partners
+
+Understood. And are you seeing more competitive pricing in Europe as a result?
+
+Dana Whitfield -- Chief Executive Officer
+
+We are seeing some competitors become more aggressive on price for smaller projects. We have chosen not to follow them below the levels where we can earn our target returns, and that may cost us a few deals in the near term.
+
+Operator
+
+Our next question comes from Elena Sokolova with Brightline Capital Markets. Please go ahead.
+
+Elena Sokolova -- Brightline Capital Markets
+
+Hi, thanks for taking my question. You expanded gross margin by 170 basis points this quarter. As tariffs flow through and you try to win European deals in a slower market, should we expect pricing pressure and a step back in margins next year?
+
+Dana Whitfield -- Chief Executive Officer
+
+Elena, we are not going to give fiscal 2027 guidance today; we will do that in January as usual. What I can say is that the software mix keeps moving in our favor and that we have a track record of protecting price. We are confident in the long-term margin framework we laid out at our investor day.
+
+Elena Sokolova -- Brightline Capital Markets
+
+But directionally, would you expect gross margin next year to be higher or lower than this year?
+
+Dana Whitfield -- Chief Executive Officer
+
+Again, I would rather not get ahead of the January guidance. There are moving parts on both sides, and we want to give you one complete picture.
+
+Operator
+
+Our next question comes from Tom Achterberg with Northgate Research. Please go ahead.
+
+Tom Achterberg -- Northgate Research
+
+Good morning. Your largest customer was about 18% of revenue last year. Can you update us on that relationship, and is the multi-year contract renewal still on track for this year?
+
+Dana Whitfield -- Chief Executive Officer
+
+Yes, Tom. Our largest customer accounted for 17% of revenue year to date, and I am pleased to say we signed the renewal in October. It is a five-year agreement that covers both new sites and software subscriptions across their existing network. We do still regard customer concentration as a risk, and diversifying the customer base remains a priority for us.
+
+Operator
+
+Our next question comes from Kenji Moreau with Ashgrove & Lyle. Please go ahead.
+
+Kenji Moreau -- Ashgrove & Lyle
+
+Thanks. On Orchestrate 5, 41 upgrades in four weeks is a good start. How should we think about the price uplift per customer, and when does that show up in annual recurring revenue?
+
+Martin Okafor -- Chief Financial Officer
+
+Kenji, the upgrade carries an average subscription uplift of around 25% for customers who take both new modules. Upgrades are billed annually in advance, so you will see the effect in annual recurring revenue as each customer reaches its renewal date. Most of the benefit therefore lands over the next four to six quarters rather than in the fourth quarter.
+
+Operator
+
+This concludes our question-and-answer session. I would like to turn the call back to Dana Whitfield for closing remarks.
+
+Dana Whitfield -- Chief Executive Officer
+
+Thank you, everyone. To sum up, we delivered record revenue, expanded margins, raised our revenue outlook and grew our software base by more than 20%. We are being realistic about Europe and about the cash impact of tariffs, and we will keep you updated. Thank you for joining us today.
+
+Operator
+
+This concludes today's conference call. You may now disconnect.
