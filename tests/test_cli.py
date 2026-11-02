@@ -84,6 +84,17 @@ def test_dry_run_prints_estimate_without_api_key(monkeypatch, capsys):
     assert "Estimated cost with claude-opus-5-5" in out
 
 
+def test_empty_transcript_is_rejected_before_any_api_call(monkeypatch, tmp_path, capsys):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test-not-a-real-key")
+    path = tmp_path / "empty.txt"
+    path.write_text("\n\n")
+    assert main(["analyze", str(path), "--dry-run"]) == 2
+    assert main(["analyze", str(path), "--out-dir", str(tmp_path)]) == 2
+    err = capsys.readouterr().err
+    assert "found 0 paragraph(s), need at least 3" in err
+    assert "Estimated cost" not in err
+
+
 def test_missing_key_is_a_clean_error(monkeypatch, tmp_path, capsys):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     assert main(["analyze", str(Q3), "--out-dir", str(tmp_path)]) == 2

@@ -23,6 +23,24 @@ from .report import (
 from .transcript import Transcript, load_transcript
 from .verify import DEFAULT_SETTINGS, Policy, VerificationSettings, VerifiedBrief, verify_brief
 
+# An earnings call has at least an introduction, some remarks and a closing. Fewer
+# paragraphs than this means the file is empty, a scanned PDF without a text layer, or
+# not a transcript, and sending it to the API would only cost money.
+MIN_PARAGRAPHS = 3
+
+
+def load_for_analysis(path: str | Path) -> Transcript:
+    """Load a transcript and refuse one that has too little text to analyse."""
+    transcript = load_transcript(path)
+    count = len(transcript.paragraphs)
+    if count < MIN_PARAGRAPHS:
+        raise ValueError(
+            f"{Path(path).name}: found {count} paragraph(s), need at least {MIN_PARAGRAPHS}. "
+            "Is the file empty, or a scanned PDF without a text layer? "
+            "Run the 'paragraphs' command to see what was parsed."
+        )
+    return transcript
+
 
 @dataclass(frozen=True)
 class AnalysisResult:
@@ -57,7 +75,7 @@ def analyze_file(
     settings: VerificationSettings = DEFAULT_SETTINGS,
     client: Any | None = None,
 ) -> AnalysisResult:
-    transcript = load_transcript(path)
+    transcript = load_for_analysis(path)
     if replay is not None:
         llm = load_replay(replay)
     else:

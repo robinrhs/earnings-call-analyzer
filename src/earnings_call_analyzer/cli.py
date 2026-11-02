@@ -27,6 +27,7 @@ from .pipeline import (
     AnalysisResult,
     analyze_file,
     compare_results,
+    load_for_analysis,
     write_brief_reports,
     write_comparison_reports,
 )
@@ -174,7 +175,7 @@ def _settings(args: argparse.Namespace) -> VerificationSettings:
 
 def _run_analyze(args: argparse.Namespace) -> int:
     if args.dry_run:
-        transcript = load_transcript(args.transcript)
+        transcript = load_for_analysis(args.transcript)
         print(_parse_summary(transcript, args.transcript.name))
         _print_estimate(transcript, resolve_model(args.model))
         return 0
@@ -196,7 +197,7 @@ def _run_analyze(args: argparse.Namespace) -> int:
 def _run_compare(args: argparse.Namespace) -> int:
     if args.dry_run:
         for path in (args.previous, args.current):
-            transcript = load_transcript(path)
+            transcript = load_for_analysis(path)
             print(_parse_summary(transcript, path.name))
             _print_estimate(transcript, resolve_model(args.model))
         return 0
