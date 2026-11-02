@@ -87,6 +87,55 @@ def test_loss_in_the_metric_name_makes_the_range_negative():
     assert span("$20 million to $10 million", "Operating loss") == (-20.0, -10.0, "millions")
 
 
+@pytest.mark.parametrize(
+    ("text", "metric", "expected"),
+    [
+        # A sign word elsewhere in the sentence does not govern the range.
+        (
+            "Despite the decline in European orders, revenue guidance of "
+            "$1.62 billion to $1.66 billion",
+            "Revenue",
+            (1620.0, 1660.0, "millions"),
+        ),
+        (
+            "After paying down debt, revenue of $1.62 billion to $1.66 billion",
+            "Revenue",
+            (1620.0, 1660.0, "millions"),
+        ),
+        (
+            "We paid down debt and expect revenue of $1.62 billion to $1.66 billion",
+            "Revenue",
+            (1620.0, 1660.0, "millions"),
+        ),
+        # A loss ratio is a positive percentage, in the metric name or in the text.
+        ("64% to 66%", "Combined loss ratio", (64.0, 66.0, "percent")),
+        ("a loss ratio of 64% to 66%", "Combined ratio", (64.0, 66.0, "percent")),
+        # Sign words that do govern the range, up to five words before it.
+        ("a net loss in the range of $20 million to $10 million", "", (-20.0, -10.0, "millions")),
+        ("we expect revenue to be down 2% to 4%", "Revenue", (-4.0, -2.0, "percent")),
+    ],
+)
+def test_sign_words_only_count_next_to_the_range(text, metric, expected):
+    assert span(text, metric) == expected
+
+
+def test_context_sign_words_do_not_flip_a_raise_into_a_cut():
+    # By hand: midpoint (1,580 + 1,630) / 2 = 1,605 -> (1,620 + 1,660) / 2 = 1,640,
+    # +35 million, 35 / 1,605 = +2.18%.
+    current = (
+        "Despite the decline in European orders, revenue guidance of $1.62 billion to $1.66 billion"
+    )
+    assert _compare_values("$1.58 billion to $1.63 billion", current, "Revenue") == (
+        "raised",
+        "Midpoint 1,605 -> 1,640 million (+35 million, +2.2%).",
+    )
+    # A higher loss ratio: 65% -> 67%, +2 pp, not "-65% -> -67%".
+    assert _compare_values("64% to 66%", "66% to 68%", "Combined loss ratio") == (
+        "raised",
+        "Midpoint 65% -> 67% (+2 pp).",
+    )
+
+
 def test_midpoint():
     assert midpoint("$1.58 billion to $1.63 billion") == (1605.0, "millions")
     assert midpoint("$1,620 million to $1,660 million") == (1640.0, "millions")
@@ -312,8 +361,10 @@ def test_fabricated_prior_range_does_not_decide_the_direction(fernhill):
     fabricated.guidance[0].prior = "$1.70 billion to $1.75 billion"
     current = verify_brief(fabricated, t3)
     assert current.guidance[0].status == "verified"
-    assert current.guidance[0].warnings[0].startswith(
-        "Prior guidance contains $1.7 billion, $1.75 billion"
+    assert (
+        current.guidance[0]
+        .warnings[0]
+        .startswith("Prior guidance contains $1.7 billion, $1.75 billion")
     )
     comparison = compare_briefs(verify_brief(previous, t2), current)
     revenue_fy = [c for c in comparison.guidance if (c.metric, c.period) == ("Revenue", "FY2026")]

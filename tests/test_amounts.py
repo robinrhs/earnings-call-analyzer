@@ -2,6 +2,7 @@ import pytest
 
 from earnings_call_analyzer.amounts import (
     find_amounts,
+    negated_by_wording,
     same_amount,
     share_range_units,
     signed_numbers,
@@ -92,3 +93,20 @@ def test_same_amount(claimed, source, expected):
     (a,) = find_amounts(claimed)
     (b,) = find_amounts(source)
     assert same_amount(a, b) is expected
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("an operating loss of ", True),
+        ("revenue down ", True),
+        ("Despite the decline in orders, revenue of ", False),
+        ("after paying down debt, revenue of ", False),
+        ("a loss ratio of ", False),
+        ("Operating loss", True),  # metric names: the end of the text is used
+        ("Combined loss ratio", False),
+        ("the decline seen in Europe has not changed our revenue outlook of ", False),
+    ],
+)
+def test_negated_by_wording(text, expected):
+    assert negated_by_wording(text) is expected

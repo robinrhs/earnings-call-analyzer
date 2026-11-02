@@ -61,6 +61,39 @@ NEGATIVE_WORDING = re.compile(
     re.IGNORECASE,
 )
 
+# Phrases that contain a sign word but do not make the amount next to them negative:
+# a "loss ratio" of 64% is a positive ratio, "paying down debt" says nothing about the
+# revenue figure that follows.
+_NOT_A_SIGN = re.compile(
+    r"\b(?:loss|losses|decline|declines)\s+(?:ratios?|rates?)\b"
+    r"|\b(?:pay|pays|paid|paying)[\s-]+down\b",
+    re.IGNORECASE,
+)
+# A sign word only governs an amount in the same clause.
+_CLAUSE_BREAK = re.compile(
+    r"[,;:.!?()]|\b(?:and|but|while|whereas|after|despite|although|though|because)\b",
+    re.IGNORECASE,
+)
+# ... and only if it is close: "a net loss in the range of $20 million" is five words.
+SIGN_WINDOW_WORDS = 5
+
+
+def negated_by_wording(text: str, position: int | None = None) -> bool:
+    """True if a loss or decline word governs the amount that starts at ``position``.
+
+    Only the last few words of the same clause count: "an operating loss of $20
+    million" and "revenue down 2% to 4%" are negative, but "Despite the decline in
+    European orders, revenue of $1.62 billion" and "after paying down debt, revenue
+    of ..." are not. Without ``position`` the end of ``text`` is used, which is how a
+    metric name is read ("Operating loss" yes, "Combined loss ratio" no).
+    """
+    before = text if position is None else text[:position]
+    breaks = list(_CLAUSE_BREAK.finditer(before))
+    clause = before[breaks[-1].end() :] if breaks else before
+    words = " ".join(_NOT_A_SIGN.sub(" ", clause).split()[-SIGN_WINDOW_WORDS:])
+    return NEGATIVE_WORDING.search(words) is not None
+
+
 _MINUS_SIGNS = "-\u2212\u2013"  # hyphen-minus, typographic minus, en dash used as minus
 # A minus sign only counts when it starts a word: "4%-6%" is a range, not minus six.
 _BEFORE_SIGN = " \t\n([{\"'/"
@@ -200,6 +233,7 @@ __all__ = [
     "SCALE_TO_MILLIONS",
     "Amount",
     "find_amounts",
+    "negated_by_wording",
     "same_amount",
     "share_range_units",
     "signed_numbers",

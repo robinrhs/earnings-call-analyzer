@@ -22,7 +22,7 @@ from typing import Literal, TypeVar
 
 from pydantic import BaseModel
 
-from .amounts import NEGATIVE_WORDING, RANGE_JOIN, Amount, find_amounts
+from .amounts import RANGE_JOIN, Amount, find_amounts, negated_by_wording
 from .schema import GuidanceItem, HeadlineFigure, Risk, ToneLabel
 from .verify import Checked, VerifiedBrief
 
@@ -142,8 +142,9 @@ def parse_guidance(text: str, metric: str = "") -> GuidanceRange | None:
       the first end takes the unit of the second, the usual shorthand.
     * Period labels and years ("Q4", "fiscal 2026") are never part of a range.
     * A lone number without unit or currency ("three new plants") is skipped.
-    * If the metric or the words before the range describe a loss or a decline, the
-      amounts are read as negative (unless a minus sign is already there).
+    * If the metric or the last few words before the range (same clause) describe a
+      loss or a decline, the amounts are read as negative (unless a minus sign is
+      already there). A "loss ratio" or "paying down debt" is not such a word.
     """
     amounts = find_amounts(text)
     for i, first in enumerate(amounts):
@@ -161,10 +162,9 @@ def parse_guidance(text: str, metric: str = "") -> GuidanceRange | None:
         ends = [first] if second is None else [first, second]
         values = [_scaled(end, end.unit or unit) for end in ends]
         # "an operating loss of $20 million to $10 million" is a range from -20 to -10,
-        # so a wider loss next quarter reads as lowered guidance, as it should.
-        loss_wording = NEGATIVE_WORDING.search(metric) or NEGATIVE_WORDING.search(
-            text[: first.start]
-        )
+        # so a wider loss next quarter reads as lowered guidance, as it should. Only a
+        # sign word next to the range counts, not "despite the decline in orders, ...".
+        loss_wording = negated_by_wording(metric) or negated_by_wording(text, first.start)
         if loss_wording and all(v >= 0 for v in values):
             values = [-v for v in values]
         others = tuple(a.value for a in amounts if a not in ends)
