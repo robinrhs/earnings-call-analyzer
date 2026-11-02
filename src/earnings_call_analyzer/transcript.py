@@ -228,12 +228,14 @@ class _SpeakerLine:
 def _match_speaker_line(line: str) -> _SpeakerLine | None:
     """Recognise the three common speaker-line layouts (without deciding if we trust it)."""
     stripped = line.strip()
-    if not stripped or len(stripped) > 120:
+    if not stripped:
         return None
-    # Inline: "Dana Whitfield: Thank you, operator."
+    # Inline: "Dana Whitfield: Thank you, operator." (the text after the colon may be long)
     inline = re.match(r"^([^:]{1,50}):\s+(\S.*)$", stripped)
     if inline and _looks_like_name(inline.group(1)):
         return _SpeakerLine(inline.group(1).strip(), None, inline.group(2), "inline")
+    if len(stripped) > 120:
+        return None  # a speaker line with a title is short; long lines are prose
     # Titled: "Dana Whitfield -- Chief Executive Officer"
     for sep in SPEAKER_SEPARATORS:
         if sep in stripped:
@@ -256,7 +258,9 @@ def _collect_roster(lines: list[str]) -> dict[str, Role]:
 
     Sources, in order of trust: the participants list, names the operator introduces
     ("question comes from ..."), titles in "Name -- Title" lines, and names that appear
-    as speakers at least twice (a single "Gross Margin: 48%" line is not a speaker).
+    as speakers at least twice. A name used as a speaker label only once still counts if
+    it is mentioned elsewhere in the text ("over to Lena Brandt"), so a one-off label
+    such as "Gross Margin: 48%" is not mistaken for a speaker.
     """
     roster: dict[str, Role] = {"operator": "operator"}
     in_participants = False
@@ -290,15 +294,16 @@ def _collect_roster(lines: list[str]) -> dict[str, Role]:
         for match in OPERATOR_INTRO.finditer(line):
             roster.setdefault(match.group("name").casefold(), "analyst")
         if speaker:
-            candidate_counts[speaker.name.casefold()] += 1
+            candidate_counts[speaker.name] += 1
             if speaker.title:
                 title_role = _role_from_title(speaker.title)
                 if title_role != "unknown":
                     roster.setdefault(speaker.name.casefold(), title_role)
 
+    full_text = "\n".join(lines)
     for name, count in candidate_counts.items():
-        if count >= 2:
-            roster.setdefault(name, "unknown")
+        if count >= 2 or full_text.count(name) >= 2:
+            roster.setdefault(name.casefold(), "unknown")
     return roster
 
 
@@ -369,6 +374,10 @@ def parse_transcript(text: str, source: str = "") -> Transcript:
             flush()
             speaker = match.name
             role = _resolve_role(match, roster, section)
+            # Remember what we learned: whoever gave prepared remarks is management in Q&A too.
+            roster.setdefault(match.name.casefold(), role)
+            if roster[match.name.casefold()] == "unknown":
+                roster[match.name.casefold()] = role
             if section == "front_matter":
                 section = "prepared_remarks"  # the call has started
             if match.rest:

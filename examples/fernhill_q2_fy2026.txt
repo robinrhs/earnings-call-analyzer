@@ -1,0 +1,63 @@
+FICTIONAL EXAMPLE TRANSCRIPT - NOT A REAL COMPANY
+Fernhill Automation Inc. is invented for this repository. All names, figures, analysts and firms are made up. Nothing here describes a real company or is investment advice.
+
+Fernhill Automation Inc. (fictional)
+Second Quarter Fiscal 2026 Earnings Conference Call
+
+Operator: Good morning and welcome to the Fernhill Automation second quarter fiscal 2026 earnings conference call. Today's call is being recorded. I would now like to turn the call over to Lena Brandt, Head of Investor Relations.
+
+Lena Brandt: Thank you, operator, and good morning. Joining me are Dana Whitfield, our Chief Executive Officer, and Martin Okafor, our Chief Financial Officer. Today's remarks include forward-looking statements that involve risks and uncertainties, and actual results may differ materially. We will also discuss non-GAAP measures; reconciliations are included in the earnings release. Dana, over to you.
+
+Dana Whitfield: Thanks, Lena, and good morning, everyone. We delivered a solid second quarter. Revenue was $395.6 million, up 11% year over year, and we continued to grow our software base faster than the business overall.
+
+Annual recurring revenue from Fernhill Orchestrate reached $552 million at quarter end, an increase of 20% from a year ago. Customers are adding modules after go-live, and our net revenue retention on software stayed above 115%.
+
+We booked $415 million of orders, a book-to-bill of 1.05, and ended the quarter with a backlog of $1.17 billion. North American demand was strong across third-party logistics and grocery, and Europe was stable, in line with what we expected at the start of the year.
+
+There are three things we are watching closely. First, lead times for certain motion-control components remain longer than we would like, and we have had to expedite some shipments at extra cost. Second, we see more aggressive pricing from competitors in the mid-market segment, particularly for smaller single-site projects. Third, wage inflation for installation technicians is running ahead of our plan, which puts pressure on project margins.
+
+Our largest customer represented about 18% of revenue last fiscal year, and we are in the middle of renewal discussions for our multi-year agreement with them. Those discussions are constructive, but until the contract is signed we treat it as a risk.
+
+With that, I will hand over to Martin.
+
+Martin Okafor: Thank you, Dana. Second quarter revenue was $395.6 million, up 11% from $356.4 million a year ago. Systems revenue grew 7% to $259.8 million and software and services revenue grew 20% to $135.8 million.
+
+Gross margin was 46.9%, up from 45.8% in the prior-year quarter, driven by software mix, partly offset by expedite costs and higher installation labor costs. Adjusted operating margin was 14.6%, and adjusted earnings per share were $0.68, compared with $0.57 a year ago.
+
+Free cash flow in the quarter was $41.2 million, and we ended the quarter with $226 million of cash and a net leverage ratio of 1.0 times adjusted EBITDA.
+
+Turning to guidance. We are raising our fiscal 2026 revenue outlook to a range of $1.58 billion to $1.63 billion, up from $1.55 billion to $1.60 billion previously. We continue to expect an adjusted operating margin of approximately 15% for the full year, and we are maintaining our free cash flow guidance of $140 million to $155 million.
+
+For the third quarter, we expect revenue of $400 million to $415 million.
+
+Operator, we are ready for questions.
+
+Operator: Thank you. We will now begin the question-and-answer session. Our first question comes from Priya Raman of Halcyon Securities.
+
+Priya Raman: Good morning. Gross margin was up 110 basis points, but you called out expedite costs and labor. Can you size those headwinds, and how much of the software mix benefit is sustainable?
+
+Martin Okafor: Sure, Priya. Expedite costs and labor inflation together were roughly 60 basis points of headwind in the quarter. We expect the expedite costs to fade as component lead times normalize, while labor inflation is more structural and we are addressing it through training and better installation tools. The software mix benefit is sustainable, because recurring revenue keeps growing faster than systems.
+
+Operator: Our next question comes from Tom Achterberg of Northgate Research.
+
+Tom Achterberg: Thanks. On the renewal with your largest customer, what is the timeline, and should we expect any change in pricing terms?
+
+Dana Whitfield: Tom, we expect to conclude the renewal in the second half of the fiscal year. I will not go into pricing terms while we are negotiating, but I can say that the scope under discussion is broader than the current contract.
+
+Operator: Our next question comes from Marcus Oyelaran of Ridgefield Partners.
+
+Marcus Oyelaran: Hi. You mentioned aggressive pricing in the mid-market. Are you losing deals, and are you willing to compete on price there?
+
+Dana Whitfield: We lost a handful of smaller deals this quarter where competitors priced well below us. Our approach is to compete on total cost of ownership and software capability, not on upfront price. In the larger multi-site projects, which are most of our backlog, we are not seeing the same pressure.
+
+Operator: Our next question comes from Elena Sokolova of Brightline Capital Markets.
+
+Elena Sokolova: Thank you. With net leverage at one times, how are you thinking about capital allocation, and are acquisitions on the table?
+
+Martin Okafor: Our first priority remains organic investment, especially in research and development and installation capacity. We look at small software acquisitions that add capability to Orchestrate, and the board has approved a $50 million share repurchase program that gives us flexibility to return excess cash.
+
+Operator: This concludes our question-and-answer session. I will turn the call back to Dana Whitfield.
+
+Dana Whitfield: Thank you all for joining. We grew revenue and software, raised our outlook, and we are being disciplined on price. We look forward to updating you next quarter.
+
+Operator: This concludes today's call. You may now disconnect.

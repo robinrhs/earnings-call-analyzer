@@ -189,3 +189,27 @@ def test_role_from_title():
     assert tr._role_from_title("Chief Financial Officer") == "management"
     assert tr._role_from_title("Equity Research Analyst, Acme") == "analyst"
     assert tr._role_from_title("Acme Securities") == "unknown"
+
+
+def test_inline_speaker_used_once_is_trusted_if_mentioned_elsewhere():
+    text = (
+        "Operator: I will now hand over to Lena Brandt, Head of Investor Relations.\n"
+        "Lena Brandt: Thank you. With me is Dana Whitfield.\n"
+        "Dana Whitfield: Good morning.\n"
+    )
+    t = parse_transcript(text)
+    assert [p.speaker for p in t.paragraphs] == ["Operator", "Lena Brandt", "Dana Whitfield"]
+
+
+def test_long_inline_turn_is_still_a_speaker_line():
+    text = "Operator: " + "Welcome to the call. " * 20 + "\nJane Doe: Thanks.\nJane Doe: More.\n"
+    t = parse_transcript(text)
+    assert t.paragraphs[0].speaker == "Operator"
+
+
+def test_role_learned_in_prepared_remarks_carries_into_qa():
+    t = load_transcript(EXAMPLES / "fernhill_q2_fy2026.txt")  # inline layout, no headers
+    qa_roles = {p.speaker: p.role for p in t.paragraphs if p.section == "qa"}
+    assert qa_roles["Martin Okafor"] == "management"
+    assert qa_roles["Priya Raman"] == "analyst"
+    assert t.paragraphs[2].section == "prepared_remarks"
