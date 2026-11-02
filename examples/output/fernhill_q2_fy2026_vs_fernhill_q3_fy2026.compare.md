@@ -4,7 +4,7 @@
 
 - Previous call: `fernhill_q2_fy2026.txt` (model `fixture (hand-authored)`, replayed from fernhill_q2_fy2026.json (no API call))
 - Current call: `fernhill_q3_fy2026.txt` (model `fixture (hand-authored)`, replayed from fernhill_q3_fy2026.json (no API call))
-- Only items that passed quote verification are compared.
+- Only items that passed quote verification, and whose numbers appear in the cited paragraph, are compared.
 
 ## Tone
 
@@ -24,9 +24,9 @@
 
 - **new** (demand): Slower European orders
 - **new** (trade / regulation): Tariffs on imported components
-- **persisting** (costs / supply chain): Pre-bought inventory ties up cash (previously: Long component lead times)
-- **persisting** (pricing / competition): Competitors pricing aggressively on smaller projects (previously: Mid-market price competition)
-- **persisting** (customer concentration): Customer concentration (previously: Largest customer renewal pending)
+- **persisting** (costs / supply chain): Pre-bought inventory ties up cash (previously: Long component lead times; matched on category only)
+- **persisting** (pricing / competition): Competitors pricing aggressively on smaller projects (previously: Mid-market price competition; matched on category only)
+- **persisting** (customer concentration): Customer concentration (previously: Largest customer renewal pending; matched on category only)
 - **dropped** (execution): Installation technician wage inflation
 
 ## Headline figures side by side

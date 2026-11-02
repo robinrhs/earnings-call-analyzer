@@ -85,3 +85,18 @@ def test_comparison_reports(q3):
     assert "1 notch more positive: balanced -> constructive." in md
     html = render_comparison_html(comparison, META, META)
     assert '<span class="change-lowered">lowered</span>' in html
+    assert "matched on category only" in md
+    assert "## Not compared" not in md  # the clean example has nothing left out
+
+
+def test_comparison_reports_list_items_that_were_not_compared(q3):
+    _, current = q3
+    t2 = load_transcript(EXAMPLES / "fernhill_q2_fy2026.txt")
+    previous = verify_brief(load_replay(EXAMPLES / "replay" / "fernhill_q2_fy2026.json").brief, t2)
+    comparison = compare_briefs(previous, current).model_copy(
+        update={"warnings": ["Q3 FY2026: guidance 'Revenue (FY2026)' not compared: <test>"]}
+    )
+    md = render_comparison_markdown(comparison, META, META)
+    assert "## Not compared\n\n- Q3 FY2026: guidance 'Revenue (FY2026)' not compared" in md
+    html = render_comparison_html(comparison, META, META)
+    assert "<h2>Not compared</h2>" in html and "&lt;test&gt;" in html

@@ -52,6 +52,7 @@ td.num { font-variant-numeric: tabular-nums; }
 .change-raised { color: var(--ok); font-weight: 600; }
 .change-lowered { color: var(--bad); font-weight: 600; }
 .change-new, .change-reported { color: var(--accent); font-weight: 600; }
+.change-not_compared { color: var(--warn); font-weight: 600; }
 @media (max-width: 600px) { table { font-size: .85rem; } th, td { padding: 6px 4px; } }
 </style>
 </head>
@@ -59,7 +60,7 @@ td.num { font-variant-numeric: tabular-nums; }
 <main>
 <h1>Fernhill Automation Inc. (fictional): Q2 FY2026 vs Q3 FY2026</h1>
 <div class="meta">Previous <code>fernhill_q2_fy2026.txt</code> &middot; current <code>fernhill_q3_fy2026.txt</code> &middot; model <code>fixture (hand-authored)</code> &middot; replayed from fernhill_q3_fy2026.json (no API call)</div>
-<p class="disclaimer">Generated with a language model and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice. Only items that passed quote verification are compared.</p>
+<p class="disclaimer">Generated with a language model and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice. Only items that passed quote verification, and whose numbers appear in the cited paragraph, are compared.</p>
 
 <h2>Tone</h2>
 <p>1 notch more positive: balanced -&gt; constructive.</p>
@@ -82,9 +83,9 @@ td.num { font-variant-numeric: tabular-nums; }
 <tbody>
 <tr><td><span class="change-new">new</span></td><td>demand</td><td>Slower European orders</td></tr>
 <tr><td><span class="change-new">new</span></td><td>trade / regulation</td><td>Tariffs on imported components</td></tr>
-<tr><td><span class="change-persisting">persisting</span></td><td>costs / supply chain</td><td>Pre-bought inventory ties up cash<div class="note">previously: Long component lead times</div></td></tr>
-<tr><td><span class="change-persisting">persisting</span></td><td>pricing / competition</td><td>Competitors pricing aggressively on smaller projects<div class="note">previously: Mid-market price competition</div></td></tr>
-<tr><td><span class="change-persisting">persisting</span></td><td>customer concentration</td><td>Customer concentration<div class="note">previously: Largest customer renewal pending</div></td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>costs / supply chain</td><td>Pre-bought inventory ties up cash<div class="note">previously: Long component lead times (matched on category only)</div></td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>pricing / competition</td><td>Competitors pricing aggressively on smaller projects<div class="note">previously: Mid-market price competition (matched on category only)</div></td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>customer concentration</td><td>Customer concentration<div class="note">previously: Largest customer renewal pending (matched on category only)</div></td></tr>
 <tr><td><span class="change-dropped">dropped</span></td><td>execution</td><td>Installation technician wage inflation</td></tr>
 </tbody>
 </table>

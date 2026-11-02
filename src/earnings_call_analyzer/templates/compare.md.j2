@@ -4,7 +4,15 @@
 
 - Previous call: `{{ previous.source }}` (model `{{ previous.model }}`, {{ previous.generated_by }})
 - Current call: `{{ current.source }}` (model `{{ current.model }}`, {{ current.generated_by }})
-- Only items that passed quote verification are compared.
+- Only items that passed quote verification, and whose numbers appear in the cited paragraph, are compared.
+{% if c.warnings %}
+
+## Not compared
+
+{% for w in c.warnings %}
+- {{ w }}
+{% endfor %}
+{% endif %}
 
 ## Tone
 
@@ -21,7 +29,7 @@
 ## Risks
 
 {% for r in c.risks %}
-- **{{ r.change }}** ({{ r.category|risk_label }}): {% if r.change == "persisting" %}{{ r.current_title }} (previously: {{ r.previous_title }}){% else %}{{ r.current_title or r.previous_title }}{% endif %}
+- **{{ r.change }}** ({{ r.category|risk_label }}): {% if r.change == "persisting" %}{{ r.current_title }} (previously: {{ r.previous_title }}{% if r.matched_on == "category" %}; matched on category only{% endif %}){% else %}{{ r.current_title or r.previous_title }}{% endif %}
 
 {% else %}
 - No risks extracted.

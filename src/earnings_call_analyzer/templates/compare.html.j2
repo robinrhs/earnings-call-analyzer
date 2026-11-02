@@ -12,7 +12,16 @@
 <main>
 <h1>{{ c.company }}: {{ c.previous_period }} vs {{ c.current_period }}</h1>
 <div class="meta">Previous <code>{{ previous.source }}</code> &middot; current <code>{{ current.source }}</code> &middot; model <code>{{ current.model }}</code> &middot; {{ current.generated_by }}</div>
-<p class="disclaimer">{{ disclaimer }} Only items that passed quote verification are compared.</p>
+<p class="disclaimer">{{ disclaimer }} Only items that passed quote verification, and whose numbers appear in the cited paragraph, are compared.</p>
+{% if c.warnings %}
+
+<h2>Not compared</h2>
+<ul>
+{% for w in c.warnings %}
+<li class="warning">{{ w }}</li>
+{% endfor %}
+</ul>
+{% endif %}
 
 <h2>Tone</h2>
 <p>{{ c.tone.description }}</p>
@@ -32,7 +41,7 @@
 <thead><tr><th>Status</th><th>Category</th><th>Risk</th></tr></thead>
 <tbody>
 {% for r in c.risks %}
-<tr><td><span class="change-{{ r.change }}">{{ r.change }}</span></td><td>{{ r.category|risk_label }}</td><td>{% if r.change == "persisting" %}{{ r.current_title }}<div class="note">previously: {{ r.previous_title }}</div>{% else %}{{ r.current_title or r.previous_title }}{% endif %}</td></tr>
+<tr><td><span class="change-{{ r.change }}">{{ r.change }}</span></td><td>{{ r.category|risk_label }}</td><td>{% if r.change == "persisting" %}{{ r.current_title }}<div class="note">previously: {{ r.previous_title }}{% if r.matched_on == "category" %} (matched on category only){% endif %}</div>{% else %}{{ r.current_title or r.previous_title }}{% endif %}</td></tr>
 {% endfor %}
 </tbody>
 </table>
