@@ -430,9 +430,8 @@ def test_figure_comparison_is_number_checked(transcript):
         "Comparison contains 41%, which does not appear in P001."
     ]
     right = make_brief().headline_figures[0]  # comparison "+14% YoY"
-    assert verify_brief(make_brief(headline_figures=[right]), transcript).headline_figures[
-        0
-    ].warnings == []
+    clean = verify_brief(make_brief(headline_figures=[right]), transcript)
+    assert clean.headline_figures[0].warnings == []
 
 
 def test_prior_guidance_is_number_checked():
