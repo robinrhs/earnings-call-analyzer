@@ -21,7 +21,7 @@
   <div class="stat"><b>{{ counts.corrected }}</b><span class="badge corrected">CORRECTED</span></div>
   <div class="stat"><b>{{ counts.unverified }}</b><span class="badge unverified">UNVERIFIED</span></div>
 </div>
-<p class="sub">Each quote is checked against the transcript: exact match, then normalised match, then the other paragraphs (to correct a wrong id), then a fuzzy match at similarity &ge; {{ "%.2f"|format(brief.fuzzy_threshold) }} with identical numbers. Unverified items are {{ "removed and listed at the end" if brief.policy == "drop" else "kept and flagged" }}.</p>
+<p class="sub">Each quote is checked against the transcript: exact match, then normalised match, then the other paragraphs (to correct a wrong id), then a fuzzy match at similarity &ge; {{ "%.2f"|format(brief.fuzzy_threshold) }} that may differ only in small words, never in a number, unit, negation or direction word. Unverified items are {{ "removed and listed at the end" if brief.policy == "drop" else "kept and flagged" }}.</p>
 
 <h2>Management tone: {{ brief.tone.item.label|capitalize }} <span class="badge {{ brief.tone.status }}">{{ brief.tone.status|upper }}</span></h2>
 <div class="item">

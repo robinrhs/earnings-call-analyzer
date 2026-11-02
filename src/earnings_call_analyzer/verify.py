@@ -233,6 +233,8 @@ _DIRECTION_WORDS = {
     "up", "down", "higher", "lower", "above", "below", "more", "less", "increase",
     "increased", "decrease", "decreased", "raise", "raised", "lowered", "grew", "growth",
     "decline", "declined", "gain", "gains", "loss", "losses", "profit", "positive", "negative",
+    "rise", "rose", "fall", "fell", "improve", "improved", "worsen", "worsened", "expand",
+    "expanded", "contract", "contracted", "beat", "miss", "missed", "ahead", "behind",
 }  # fmt: skip
 
 
