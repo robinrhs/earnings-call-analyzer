@@ -14,7 +14,9 @@ from earnings_call_analyzer.verify import (
     VerificationSettings,
     check_quote,
     extract_numbers,
+    meaningful_differences,
     normalize_text,
+    normalize_word,
     verify_brief,
     worst_status,
 )
@@ -102,7 +104,7 @@ def test_fuzzy_rejects_a_changed_number_even_when_strings_are_similar(transcript
     quote = "raising our fiscal 2026 revenue guidance to a range of $1.70 billion to $1.66 billion"
     check = check_quote(ev("P003", quote), transcript)
     assert check.status == "unverified"
-    assert "numbers differ" in check.note
+    assert "changes the claim: '$1.70' vs '$1.62'" in check.note
 
 
 def test_stricter_threshold_rejects_a_small_wording_slip(transcript):
@@ -162,6 +164,105 @@ def test_worst_status():
 
 def test_extract_numbers():
     assert extract_numbers("$1,210.5 million, up 14% from 0.9x") == [1210.5, 14.0, 0.9]
+
+
+def test_extract_numbers_keeps_signs_and_skips_periods():
+    assert extract_numbers("organic growth of -3% (2)% in Q4 of fiscal 2026") == [-3.0, -2.0]
+
+
+# --- adversarial cases: a quote that reads almost the same but claims something else ----
+
+TRAPS = """Prepared Remarks
+
+Jane Doe -- Chief Executive Officer
+
+Software revenue grew 19% to $82 million in the quarter, and organic growth
+in Europe was -3% as orders slowed.
+
+We now expect full-year revenue of $1.62 billion to $1.66 billion, and we do
+not expect further margin pressure next year.
+
+Segment EBITDA was (4)% of sales in the start-up plants, and revenue was up 2.5 million units.
+"""
+
+
+@pytest.fixture
+def traps():
+    return parse_transcript(TRAPS)
+
+
+@pytest.mark.parametrize(
+    ("pid", "quote", "why"),
+    [
+        ("P001", "9% to $82 million in the quarter", "starts inside '19%'"),
+        ("P001", "organic growth in Europe was 3% as orders slowed", "drops the minus sign"),
+        (
+            "P002",
+            "We now expect full-year revenue of $1.62 billion to $1.6",
+            "ends inside '$1.66'",
+        ),
+        ("P003", "Segment EBITDA was 4% of sales in the start-up plants", "drops the brackets"),
+        ("P003", "and revenue was up 5 million units", "starts inside '2.5'"),
+        (
+            "P002",
+            "We now expect full-year revenue of $1.62 million to $1.66 million",
+            "billion became million",
+        ),
+        ("P002", "and we do expect further margin pressure next year", "drops 'not'"),
+        (
+            "P002",
+            "We now expect full-year revenue of $1.62 billion to $1.66 billion, and we do "
+            "not expect lower margin pressure",
+            "'further' became 'lower'",
+        ),
+    ],
+)
+def test_quotes_that_change_the_claim_are_rejected(traps, pid, quote, why):
+    check = check_quote(ev(pid, quote), traps)
+    assert check.status == "unverified", why
+
+
+@pytest.mark.parametrize(
+    ("quote", "method"),
+    [
+        ("Software revenue grew 19% to $82 million in the quarter", "exact"),
+        ("organic growth in Europe was -3% as orders slowed", "exact"),
+        ("organic growth in Europe was \u22123% as orders slowed", "normalized"),
+        ("Segment EBITDA was -4% of sales in the start-up plants", "normalized"),
+        ("Software revenue grew 19% to $82 million in this quarter", "fuzzy"),
+    ],
+)
+def test_signed_and_near_verbatim_quotes_still_pass(traps, quote, method):
+    pid = "P003" if "EBITDA" in quote else "P001"
+    check = check_quote(ev(pid, quote), traps)
+    assert (check.status, check.method) == ("verified", method)
+
+
+def test_a_harmless_truncated_word_is_only_a_fuzzy_match(traps):
+    quote = "Software revenue grew 19% to $82 million in the q"
+    check = check_quote(ev("P001", quote), traps)
+    assert (check.status, check.method) == ("verified", "fuzzy")
+
+
+def test_rejected_near_match_names_the_difference(traps):
+    quote = "We now expect full-year revenue of $1.62 million to $1.66 million"
+    check = check_quote(ev("P002", quote), traps)
+    assert "'million' vs 'billion'" in check.note
+
+
+def test_normalize_word_keeps_the_sign_of_a_number():
+    assert normalize_word("-3%") == "-3%"
+    assert normalize_word("(3)%") == "-3%"
+    assert normalize_word("($20.5),") == "-$20.5"
+    assert normalize_word("(14%") == "14%"  # an opening bracket alone is just punctuation
+    assert normalize_word("-revenue") == "revenue"
+    assert normalize_word("\u2014") == ""
+
+
+def test_meaningful_differences_ignores_small_words():
+    assert meaningful_differences("that projects are", "that the projects are") == []
+    assert meaningful_differences("we do expect", "we do not expect") == ["'(nothing)' vs 'not'"]
+    assert meaningful_differences("revenue was up", "revenue was down") == ["'up' vs 'down'"]
 
 
 # --- whole brief ------------------------------------------------------------------------
@@ -252,6 +353,22 @@ def test_tone_is_kept_and_flagged_not_dropped(transcript):
     )
     result = verify_brief(make_brief(tone=tone), transcript, policy="drop")
     assert result.tone.status == "unverified"
+
+
+def test_number_warning_understands_scale_and_sign():
+    t = parse_transcript(
+        "Prepared Remarks\n\nJane Doe -- CEO\n\n"
+        "Revenue was $1.62 billion, a decline of 3% from last year.\n"
+    )
+    figure = HeadlineFigure(
+        metric="Revenue",
+        value="$1,620 million, -3% for fiscal 2026",
+        period="FY2026",
+        comparison=None,
+        evidence=ev("P001", "Revenue was $1.62 billion, a decline of 3% from last year"),
+    )
+    result = verify_brief(make_brief(headline_figures=[figure], guidance=[]), t, policy="flag")
+    assert result.headline_figures[0].warnings == []
 
 
 def test_number_in_guidance_not_in_source_paragraph_is_warned(transcript):

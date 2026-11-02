@@ -7,16 +7,22 @@ model says is trusted until its supporting quote has been found in the transcrip
 
 For each quote we try, in this order (cheapest and strictest first):
 
-1. **exact** - the quote is a literal substring of the cited paragraph.
+1. **exact** - the quote is a literal substring of the cited paragraph that starts and
+   ends on a word boundary, so "9% to $82 million" is not found inside "19% to $82
+   million", and "3%" is not found inside "-3%".
 2. **normalized** - same words in the same order after harmless normalisation:
    curly vs straight quotes, en/em dashes vs hyphens, extra whitespace, upper/lower case,
-   punctuation at word edges. "$" and "%" are kept because they change meaning.
+   punctuation at word edges. "$", "%" and a minus sign in front of a number are kept
+   because they change meaning; accounting brackets "(3)%" are read as "-3%".
 3. exact/normalized in *another* paragraph - the model copied the words correctly but
    cited the wrong id. We correct the id and mark the item **corrected**.
 4. **fuzzy** - a conservative similarity match for small slips (one word changed or
    dropped), first in the cited paragraph, then elsewhere. The threshold is 0.90 on
    :class:`difflib.SequenceMatcher` similarity and only applies to quotes of at least
-   eight words, because short strings match each other by chance.
+   eight words, because short strings match each other by chance. The words that
+   differ must be harmless: a near match is rejected if any differing word is a number,
+   a unit or scale ("million" vs "billion"), a negation ("not") or a direction word
+   ("up" vs "down"). Those are exactly the slips that turn a quote into a different claim.
 5. Otherwise the quote is **unverified**.
 
 A verified quote proves the words were said. It does not prove the model's *summary*
@@ -34,6 +40,7 @@ from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel
 
+from .amounts import NEGATIVE_WORDING, find_amounts, signed_numbers
 from .schema import AnalystQuestion, Brief, Evidence, GuidanceItem, HeadlineFigure, Risk, Tone
 from .transcript import Paragraph, Transcript
 
@@ -53,8 +60,14 @@ _CHAR_MAP: dict[int, str] = {
     0x00A0: " ",  # non-breaking space
     0x2026: "...",  # ellipsis character
 }
-# Punctuation stripped from the *edges* of each word. "$" and "%" stay on purpose.
+# Punctuation stripped from the *edges* of each word. "$" and "%" stay on purpose, and
+# a "-" in front of a number is put back (see normalize_word).
 _EDGE_PUNCTUATION = "\"'.,;:!?()[]{}<>*_-"
+# Accounting brackets around a number mean minus: "(3)%" -> "-3%", "($20.5)" -> "-$20.5".
+_ACCOUNTING_NEGATIVE = re.compile(r"\((\$?\d[\d,]*(?:\.\d+)?)\)")
+_STARTS_WITH_NUMBER = re.compile(r"\$?\d")
+# Characters that belong to the number right after them: currency signs, minus, bracket.
+_NUMBER_PREFIX = "$-(" + "".join(map(chr, (0x20AC, 0x00A3, 0x2212)))
 _QUOTE_WRAPPERS = "\"'" + "".join(map(chr, _SINGLE_QUOTES[:2] + _DOUBLE_QUOTES[:2]))
 
 
@@ -93,8 +106,14 @@ def _clean_quote(quote: str) -> str:
 
 
 def normalize_word(word: str) -> str:
-    word = unicodedata.normalize("NFKC", word).translate(_CHAR_MAP)
-    return word.casefold().strip(_EDGE_PUNCTUATION)
+    word = unicodedata.normalize("NFKC", word).translate(_CHAR_MAP).casefold()
+    word = _ACCOUNTING_NEGATIVE.sub(r"-\1", word)
+    core = word.strip(_EDGE_PUNCTUATION)
+    # The sign is part of the number: "-3%" must not normalise to the same word as "3%".
+    leading = word[: len(word) - len(word.lstrip(_EDGE_PUNCTUATION))]
+    if leading.endswith("-") and _STARTS_WITH_NUMBER.match(core):
+        core = "-" + core
+    return core
 
 
 def tokenize(text: str) -> list[tuple[str, str]]:
@@ -125,8 +144,46 @@ class _Match:
     text: str
 
 
+def _starts_cleanly(text: str, start: int) -> bool:
+    """A quote must not begin in the middle of a word or a number."""
+    if start == 0:
+        return True
+    before, first = text[start - 1], text[start]
+    if before.isalnum() and first.isalnum():
+        return False  # "9%" inside "19%", "venue" inside "revenue"
+    if first.isdigit() and before in _NUMBER_PREFIX:
+        return False  # "3%" from "-3%", "1.62" from "$1.62", "3)" from "(3)"
+    if first in _NUMBER_PREFIX and before in _NUMBER_PREFIX:
+        return False  # "$20" from "-$20"
+    return not (first.isdigit() and before in ".," and start >= 2 and text[start - 2].isdigit())
+
+
+def _ends_cleanly(text: str, end: int) -> bool:
+    """A quote must not stop in the middle of a word or a number."""
+    if end == len(text):
+        return True
+    last, after = text[end - 1], text[end]
+    if last.isalnum() and after.isalnum():
+        return False  # "$82 m" from "$82 million"
+    if last.isdigit() and after in "%)":
+        return False  # "grew 19" from "grew 19%"
+    return not (
+        last.isdigit() and after in ".," and end + 1 < len(text) and text[end + 1].isdigit()
+    )
+
+
+def _contains_whole(text: str, quote: str) -> bool:
+    """Literal substring test that only accepts matches on word boundaries."""
+    start = text.find(quote)
+    while start != -1:
+        if _starts_cleanly(text, start) and _ends_cleanly(text, start + len(quote)):
+            return True
+        start = text.find(quote, start + 1)
+    return False
+
+
 def _exact_or_normalized(quote: str, paragraph: Paragraph) -> _Match | None:
-    if quote in paragraph.text:
+    if quote and _contains_whole(paragraph.text, quote):
         return _Match("exact", 1.0, quote)
     quote_words = [w for w, _ in tokenize(quote)]
     para = tokenize(paragraph.text)
@@ -163,6 +220,50 @@ def _best_fuzzy(quote: str, paragraph: Paragraph) -> _Match | None:
             if best is None or score > best.score:
                 best = _Match("fuzzy", score, " ".join(o for _, o in window))
     return best
+
+
+# Words whose change turns a quote into a different claim. A fuzzy match may differ
+# from the transcript in small words ("the", "that", "our"), never in one of these.
+_UNIT_WORDS = {
+    "%", "percent", "pp", "bps", "basis", "point", "points", "thousand", "million",
+    "millions", "billion", "billions", "trillion", "mn", "bn", "m", "b", "k", "x",
+}  # fmt: skip
+_NEGATIONS = {"not", "no", "never", "none", "nor", "neither", "without", "cannot", "nothing"}
+_DIRECTION_WORDS = {
+    "up", "down", "higher", "lower", "above", "below", "more", "less", "increase",
+    "increased", "decrease", "decreased", "raise", "raised", "lowered", "grew", "growth",
+    "decline", "declined", "gain", "gains", "loss", "losses", "profit", "positive", "negative",
+}  # fmt: skip
+
+
+def _changes_meaning(word: str) -> bool:
+    return (
+        any(ch.isdigit() for ch in word)
+        or "$" in word
+        or "%" in word
+        or word.endswith("n't")  # don't, won't, isn't
+        or word in _UNIT_WORDS
+        or word in _NEGATIONS
+        or word in _DIRECTION_WORDS
+    )
+
+
+def meaningful_differences(quote: str, matched: str) -> list[str]:
+    """The word-level differences between two texts that change what is being claimed.
+
+    Returns e.g. ["'million' vs 'billion'"]; an empty list means every difference is a
+    harmless small word.
+    """
+    a = [w for w, _ in tokenize(quote)]
+    b = [w for w, _ in tokenize(matched)]
+    differences = []
+    for tag, i1, i2, j1, j2 in SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if tag == "equal":
+            continue
+        if any(_changes_meaning(w) for w in a[i1:i2] + b[j1:j2]):
+            ours, theirs = " ".join(a[i1:i2]) or "(nothing)", " ".join(b[j1:j2]) or "(nothing)"
+            differences.append(f"'{ours}' vs '{theirs}'")
+    return differences
 
 
 # --- Checking one quote -----------------------------------------------------------------
@@ -214,19 +315,25 @@ def check_quote(
             note = f"{missing}Quote found in {paragraph.id}, not in {cited_id}; id corrected."
             return _result(cited_id, paragraph.id, "corrected", match, note.strip())
 
-    # 4. conservative fuzzy fallback, cited paragraph first. A near match whose numbers
-    #    differ is *not* accepted: "$1.70 billion" vs "$1.62 billion" is a 97% similar
-    #    string but a completely different guidance number.
+    # 4. conservative fuzzy fallback, cited paragraph first. A near match that differs
+    #    in a number, unit, negation or direction word is *not* accepted: "$1.62 million"
+    #    vs "$1.62 billion" is a 97% similar string but a 1,000x different figure, and
+    #    "we do expect" vs "we do not expect" says the opposite.
     best_seen: tuple[float, str | None] = (0.0, None)
-    numbers_differ_in: str | None = None
+    meaning_differs: str | None = None
     if word_count >= settings.min_fuzzy_words:
         candidates = ([cited] if cited else []) + others
         for paragraph in candidates:
             match = _best_fuzzy(quote, paragraph)
             if match is None:
                 continue
-            if match.score >= settings.fuzzy_threshold and not _same_numbers(quote, match.text):
-                numbers_differ_in = numbers_differ_in or paragraph.id
+            differences = meaningful_differences(quote, match.text)
+            if match.score >= settings.fuzzy_threshold and differences:
+                meaning_differs = meaning_differs or (
+                    f" A similar sentence exists in {paragraph.id} (similarity "
+                    f"{match.score:.2f}), but it differs in a word that changes the claim: "
+                    f"{', '.join(differences)}."
+                )
             elif match.score >= settings.fuzzy_threshold:
                 if paragraph.id == cited_id:
                     note = f"Near-verbatim match (similarity {match.score:.2f})."
@@ -242,8 +349,8 @@ def check_quote(
     # 5. nothing found
     score, where = best_seen
     detail = f" Closest passage: {where} (similarity {score:.2f})." if where else ""
-    if numbers_differ_in:
-        detail = f" A similar sentence exists in {numbers_differ_in}, but its numbers differ."
+    if meaning_differs:
+        detail = meaning_differs
     return QuoteCheck(
         cited_id=cited_id,
         found_id=None,
@@ -269,21 +376,33 @@ def _result(cited_id: str, found_id: str, status: Status, match: _Match, note: s
 
 # --- Numbers ----------------------------------------------------------------------------
 
-_NUMBER = re.compile(r"\d+(?:,\d{3})*(?:\.\d+)?")
-
 
 def extract_numbers(text: str) -> list[float]:
-    """All numbers in a string, with thousands separators removed: '$1,210.5m' -> 1210.5."""
-    return [float(raw.replace(",", "")) for raw in _NUMBER.findall(text)]
+    """Signed amounts in a string, without period labels or years.
 
-
-def _same_numbers(quote: str, transcript_text: str) -> bool:
-    return sorted(extract_numbers(quote)) == sorted(extract_numbers(transcript_text))
+    '$1,210.5m, down -3% in Q4 2026' -> [1210.5, -3.0]. See :mod:`.amounts`.
+    """
+    return signed_numbers(text)
 
 
 def _numbers_missing(claimed: str, source_text: str) -> list[float]:
-    available = set(extract_numbers(source_text))
-    return [n for n in extract_numbers(claimed) if n not in available]
+    """Numbers in the model's summary that the source paragraph does not contain.
+
+    "$1,620 million" is found in a paragraph that says "$1.62 billion" (same amount in
+    millions). "-3%" is found in a paragraph that says "a decline of 3%", because the
+    sign can be carried by the wording instead of a minus sign.
+    """
+    source = find_amounts(source_text)
+    available = {a.value for a in source} | {
+        m for a in source if (m := a.in_millions()) is not None
+    }
+    if NEGATIVE_WORDING.search(source_text):
+        available |= {-value for value in available}
+    missing = []
+    for amount in find_amounts(claimed):
+        if amount.value not in available and amount.in_millions() not in available:
+            missing.append(amount.value)
+    return missing
 
 
 # --- Checking a whole brief -------------------------------------------------------------
@@ -477,6 +596,7 @@ __all__ = [
     "VerifiedBrief",
     "check_quote",
     "extract_numbers",
+    "meaningful_differences",
     "normalize_text",
     "verify_brief",
     "worst_status",
