@@ -421,6 +421,48 @@ def test_number_check_reads_shorthand_ranges_in_the_source():
     assert result.guidance[0].warnings == []
 
 
+def test_figure_comparison_is_number_checked(transcript):
+    # P001 says "grew 14% year over year"; 41% is a made-up growth rate.
+    wrong = make_brief().headline_figures[0].model_copy(update={"comparison": "+41% YoY"})
+    result = verify_brief(make_brief(headline_figures=[wrong]), transcript)
+    assert result.headline_figures[0].status == "verified"
+    assert result.headline_figures[0].warnings == [
+        "Comparison contains 41%, which does not appear in P001."
+    ]
+    right = make_brief().headline_figures[0]  # comparison "+14% YoY"
+    assert verify_brief(make_brief(headline_figures=[right]), transcript).headline_figures[
+        0
+    ].warnings == []
+
+
+def test_prior_guidance_is_number_checked():
+    t = parse_transcript(
+        "Prepared Remarks\n\nJohn Roe -- CFO\n\n"
+        "We are raising our revenue guidance to $1.62 billion to $1.66 billion, "
+        "up from our prior range of $1.58 billion to $1.63 billion.\n"
+    )
+
+    def guidance(prior):
+        return GuidanceItem(
+            metric="Revenue",
+            period="FY2026",
+            current="$1.62 billion to $1.66 billion",
+            prior=prior,
+            direction="raised",
+            evidence=ev("P001", "We are raising our revenue guidance to $1.62 billion"),
+        )
+
+    def warnings(prior):
+        brief = make_brief(headline_figures=[], guidance=[guidance(prior)])
+        return verify_brief(brief, t).guidance[0].warnings
+
+    assert warnings("$1.58 billion to $1.63 billion") == []
+    assert warnings(None) == []
+    assert warnings("$1.70 billion to $1.75 billion") == [
+        "Prior guidance contains $1.7 billion, $1.75 billion, which does not appear in P001."
+    ]
+
+
 def test_number_in_guidance_not_in_source_paragraph_is_warned(transcript):
     result = verify_brief(make_brief(), transcript)
     warnings = result.guidance[0].warnings

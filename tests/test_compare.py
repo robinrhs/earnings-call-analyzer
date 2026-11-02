@@ -301,6 +301,32 @@ def test_guidance_with_a_number_warning_is_not_compared(fernhill):
     assert any("not compared" in w and "1.7" in w for w in comparison.warnings)
 
 
+def test_fabricated_prior_range_does_not_decide_the_direction(fernhill):
+    (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
+    # Without revenue guidance in last quarter's brief, the prior range stated on this
+    # call is the only basis for raised/lowered. The transcript says $1.58bn-$1.63bn
+    # (midpoint 1,605 -> 1,640: raised); a made-up $1.70bn-$1.75bn would read as lowered.
+    previous = q2.model_copy(deep=True)
+    previous.guidance = [x for x in previous.guidance if x.metric != "Revenue"]
+    fabricated = q3.model_copy(deep=True)
+    fabricated.guidance[0].prior = "$1.70 billion to $1.75 billion"
+    current = verify_brief(fabricated, t3)
+    assert current.guidance[0].status == "verified"
+    assert current.guidance[0].warnings[0].startswith(
+        "Prior guidance contains $1.7 billion, $1.75 billion"
+    )
+    comparison = compare_briefs(verify_brief(previous, t2), current)
+    revenue_fy = [c for c in comparison.guidance if (c.metric, c.period) == ("Revenue", "FY2026")]
+    assert revenue_fy == []  # withheld, so no direction at all
+    assert any("Revenue (FY2026)' not compared: Prior guidance" in w for w in comparison.warnings)
+
+    # The real prior range from the transcript gives the hand-computed answer.
+    real = compare_briefs(verify_brief(previous, t2), verify_brief(q3, t3))
+    (change,) = [c for c in real.guidance if (c.metric, c.period) == ("Revenue", "FY2026")]
+    assert change.change == "raised"
+    assert change.detail.startswith("Midpoint 1,605 -> 1,640 million (+35 million, +2.2%).")
+
+
 def test_unverified_tone_is_not_compared(fernhill):
     (q2, t2), (q3, t3) = fernhill["q2"], fernhill["q3"]
     fabricated = q3.model_copy(deep=True)

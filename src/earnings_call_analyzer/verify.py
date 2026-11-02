@@ -553,6 +553,10 @@ def verify_brief(
             item=fig, checks=checks, status=worst_status(checks), warnings=[]
         )
         checked.warnings += _number_warnings(fig.value, "Value", checked.checks[0], transcript)
+        if fig.comparison:
+            checked.warnings += _number_warnings(
+                fig.comparison, "Comparison", checked.checks[0], transcript
+            )
         if keep("Headline figures", f"{fig.metric}: {fig.value}", checked):
             figures.append(checked)
 
@@ -563,6 +567,12 @@ def verify_brief(
             item=g, checks=checks, status=worst_status(checks), warnings=[]
         )
         checked.warnings += _number_warnings(g.current, "Guidance", checked.checks[0], transcript)
+        if g.prior:
+            # The prior range can decide raised/lowered in the QoQ diff, so it is
+            # checked like the current one.
+            checked.warnings += _number_warnings(
+                g.prior, "Prior guidance", checked.checks[0], transcript
+            )
         if keep("Guidance", f"{g.metric} ({g.period}): {g.current}", checked):
             guidance.append(checked)
 
