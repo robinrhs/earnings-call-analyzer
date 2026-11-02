@@ -1,0 +1,138 @@
+{
+  "company": "Fernhill Automation Inc. (fictional)",
+  "previous_period": "Q2 FY2026",
+  "current_period": "Q3 FY2026",
+  "guidance": [
+    {
+      "metric": "Revenue",
+      "period": "FY2026",
+      "previous": "$1.58 billion to $1.63 billion",
+      "current": "$1.62 billion to $1.66 billion",
+      "change": "raised",
+      "stated_direction": "raised",
+      "detail": "Midpoint 1,605 -> 1,640 million (+35 million, +2.2%)."
+    },
+    {
+      "metric": "Adjusted operating margin",
+      "period": "FY2026",
+      "previous": "approximately 15%",
+      "current": "approximately 15%",
+      "change": "maintained",
+      "stated_direction": "maintained",
+      "detail": "Midpoint unchanged."
+    },
+    {
+      "metric": "Free cash flow",
+      "period": "FY2026",
+      "previous": "$140 million to $155 million",
+      "current": "$120 million to $135 million",
+      "change": "lowered",
+      "stated_direction": "lowered",
+      "detail": "Midpoint 147.5 -> 127.5 million (-20 million, -13.6%)."
+    },
+    {
+      "metric": "Revenue",
+      "period": "Q4 FY2026",
+      "previous": null,
+      "current": "$435 million to $450 million",
+      "change": "new",
+      "stated_direction": "initiated",
+      "detail": "No comparable guidance last quarter."
+    },
+    {
+      "metric": "Revenue",
+      "period": "Q3 FY2026",
+      "previous": "$400 million to $415 million",
+      "current": null,
+      "change": "reported",
+      "stated_direction": null,
+      "detail": "Reported $412.3 million, within the guided range (upper half) of $400 million to $415 million."
+    }
+  ],
+  "risks": [
+    {
+      "category": "demand",
+      "change": "new",
+      "previous_title": null,
+      "current_title": "Slower European orders"
+    },
+    {
+      "category": "trade_regulation",
+      "change": "new",
+      "previous_title": null,
+      "current_title": "Tariffs on imported components"
+    },
+    {
+      "category": "costs_supply_chain",
+      "change": "persisting",
+      "previous_title": "Long component lead times",
+      "current_title": "Pre-bought inventory ties up cash"
+    },
+    {
+      "category": "pricing_competition",
+      "change": "persisting",
+      "previous_title": "Mid-market price competition",
+      "current_title": "Competitors pricing aggressively on smaller projects"
+    },
+    {
+      "category": "customer_concentration",
+      "change": "persisting",
+      "previous_title": "Largest customer renewal pending",
+      "current_title": "Customer concentration"
+    },
+    {
+      "category": "execution",
+      "change": "dropped",
+      "previous_title": "Installation technician wage inflation",
+      "current_title": null
+    }
+  ],
+  "tone": {
+    "previous": "balanced",
+    "current": "constructive",
+    "steps": 1,
+    "description": "1 notch more positive: balanced -> constructive."
+  },
+  "figures": [
+    {
+      "metric": "Revenue",
+      "previous": "$395.6 million",
+      "current": "$412.3 million"
+    },
+    {
+      "metric": "Annual recurring revenue (ARR)",
+      "previous": "$552 million",
+      "current": "$588 million"
+    },
+    {
+      "metric": "Gross margin",
+      "previous": "46.9%",
+      "current": "47.8%"
+    },
+    {
+      "metric": "Adjusted operating margin",
+      "previous": "14.6%",
+      "current": "15.2%"
+    },
+    {
+      "metric": "Adjusted EPS",
+      "previous": "$0.68",
+      "current": "$0.74"
+    },
+    {
+      "metric": "Free cash flow",
+      "previous": "$41.2 million",
+      "current": "$38.5 million"
+    },
+    {
+      "metric": "Book-to-bill ratio",
+      "previous": "1.05",
+      "current": "1.08"
+    },
+    {
+      "metric": "Backlog",
+      "previous": "$1.17 billion",
+      "current": "$1.21 billion"
+    }
+  ]
+}

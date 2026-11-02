@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fernhill Automation Inc. (fictional) Q2 FY2026 vs Q3 FY2026</title>
+<style>
+:root {
+  --bg: #fbfbf9; --fg: #1d2125; --muted: #5d6670; --line: #dfe2e6; --card: #ffffff;
+  --ok: #1f7a4d; --ok-bg: #e3f4ea; --warn: #8a5a00; --warn-bg: #fdf1d8;
+  --bad: #a1262c; --bad-bg: #fbe4e5; --accent: #24508f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181b; --fg: #e6e8ea; --muted: #9aa3ad; --line: #2c3238; --card: #1c2024;
+    --ok: #7fd4a4; --ok-bg: #173526; --warn: #f1c46a; --warn-bg: #3a2e12;
+    --bad: #f19aa0; --bad-bg: #3d1c1f; --accent: #8db4ec;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; }
+h2 { font-size: 1.2rem; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1rem; margin: 0 0 6px; }
+.meta { color: var(--muted); font-size: .9rem; }
+.disclaimer { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--card); color: var(--muted); font-size: .9rem; }
+.summary { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-width: 120px; }
+.stat b { display: block; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.item { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+.item.unverified { border-color: var(--bad); }
+.headline { font-weight: 600; }
+.sub { color: var(--muted); font-size: .9rem; }
+blockquote { margin: 8px 0 0; padding: 6px 10px; border-left: 3px solid var(--line); color: var(--fg); font-style: italic; }
+.note { color: var(--muted); font-size: .85rem; margin-top: 4px; }
+.warning { color: var(--warn); font-size: .85rem; margin-top: 4px; }
+.badge { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .03em; padding: 2px 7px; border-radius: 999px; vertical-align: middle; font-style: normal; }
+.badge.verified { color: var(--ok); background: var(--ok-bg); }
+.badge.corrected { color: var(--warn); background: var(--warn-bg); }
+.badge.unverified { color: var(--bad); background: var(--bad-bg); }
+a { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; }
+.transcript p { margin: 0 0 10px; padding: 6px 8px; border-radius: 6px; }
+.transcript p.cited { background: var(--card); border: 1px solid var(--line); }
+.transcript p:target { outline: 2px solid var(--accent); }
+.pid { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); margin-right: 6px; }
+.change-raised { color: var(--ok); font-weight: 600; }
+.change-lowered { color: var(--bad); font-weight: 600; }
+.change-new, .change-reported { color: var(--accent); font-weight: 600; }
+@media (max-width: 600px) { table { font-size: .85rem; } th, td { padding: 6px 4px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Fernhill Automation Inc. (fictional): Q2 FY2026 vs Q3 FY2026</h1>
+<div class="meta">Previous <code>fernhill_q2_fy2026.txt</code> &middot; current <code>fernhill_q3_fy2026.txt</code> &middot; model <code>fixture (hand-authored)</code> &middot; replayed from fernhill_q3_fy2026.json (no API call)</div>
+<p class="disclaimer">Generated with a language model and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice. Only items that passed quote verification are compared.</p>
+
+<h2>Tone</h2>
+<p>1 notch more positive: balanced -&gt; constructive.</p>
+
+<h2>Guidance</h2>
+<table>
+<thead><tr><th>Metric</th><th>Period</th><th>Previous</th><th>Current</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>Revenue</td><td>FY2026</td><td class="num">$1.58 billion to $1.63 billion</td><td class="num">$1.62 billion to $1.66 billion</td><td><span class="change-raised">raised</span><div class="note">Midpoint 1,605 -&gt; 1,640 million (+35 million, +2.2%).</div></td></tr>
+<tr><td>Adjusted operating margin</td><td>FY2026</td><td class="num">approximately 15%</td><td class="num">approximately 15%</td><td><span class="change-maintained">maintained</span><div class="note">Midpoint unchanged.</div></td></tr>
+<tr><td>Free cash flow</td><td>FY2026</td><td class="num">$140 million to $155 million</td><td class="num">$120 million to $135 million</td><td><span class="change-lowered">lowered</span><div class="note">Midpoint 147.5 -&gt; 127.5 million (-20 million, -13.6%).</div></td></tr>
+<tr><td>Revenue</td><td>Q4 FY2026</td><td class="num">-</td><td class="num">$435 million to $450 million</td><td><span class="change-new">new</span><div class="note">No comparable guidance last quarter.</div></td></tr>
+<tr><td>Revenue</td><td>Q3 FY2026</td><td class="num">$400 million to $415 million</td><td class="num">-</td><td><span class="change-reported">reported</span><div class="note">Reported $412.3 million, within the guided range (upper half) of $400 million to $415 million.</div></td></tr>
+</tbody>
+</table>
+
+<h2>Risks</h2>
+<table>
+<thead><tr><th>Status</th><th>Category</th><th>Risk</th></tr></thead>
+<tbody>
+<tr><td><span class="change-new">new</span></td><td>demand</td><td>Slower European orders</td></tr>
+<tr><td><span class="change-new">new</span></td><td>trade / regulation</td><td>Tariffs on imported components</td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>costs / supply chain</td><td>Pre-bought inventory ties up cash<div class="note">previously: Long component lead times</div></td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>pricing / competition</td><td>Competitors pricing aggressively on smaller projects<div class="note">previously: Mid-market price competition</div></td></tr>
+<tr><td><span class="change-persisting">persisting</span></td><td>customer concentration</td><td>Customer concentration<div class="note">previously: Largest customer renewal pending</div></td></tr>
+<tr><td><span class="change-dropped">dropped</span></td><td>execution</td><td>Installation technician wage inflation</td></tr>
+</tbody>
+</table>
+
+<h2>Headline figures side by side</h2>
+<table>
+<thead><tr><th>Metric</th><th>Q2 FY2026</th><th>Q3 FY2026</th></tr></thead>
+<tbody>
+<tr><td>Revenue</td><td class="num">$395.6 million</td><td class="num">$412.3 million</td></tr>
+<tr><td>Annual recurring revenue (ARR)</td><td class="num">$552 million</td><td class="num">$588 million</td></tr>
+<tr><td>Gross margin</td><td class="num">46.9%</td><td class="num">47.8%</td></tr>
+<tr><td>Adjusted operating margin</td><td class="num">14.6%</td><td class="num">15.2%</td></tr>
+<tr><td>Adjusted EPS</td><td class="num">$0.68</td><td class="num">$0.74</td></tr>
+<tr><td>Free cash flow</td><td class="num">$41.2 million</td><td class="num">$38.5 million</td></tr>
+<tr><td>Book-to-bill ratio</td><td class="num">1.05</td><td class="num">1.08</td></tr>
+<tr><td>Backlog</td><td class="num">$1.17 billion</td><td class="num">$1.21 billion</td></tr>
+</tbody>
+</table>
+</main>
+</body>
+</html>

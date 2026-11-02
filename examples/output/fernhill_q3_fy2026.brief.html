@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fernhill Automation Inc. (fictional) Q3 FY2026 brief</title>
+<style>
+:root {
+  --bg: #fbfbf9; --fg: #1d2125; --muted: #5d6670; --line: #dfe2e6; --card: #ffffff;
+  --ok: #1f7a4d; --ok-bg: #e3f4ea; --warn: #8a5a00; --warn-bg: #fdf1d8;
+  --bad: #a1262c; --bad-bg: #fbe4e5; --accent: #24508f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181b; --fg: #e6e8ea; --muted: #9aa3ad; --line: #2c3238; --card: #1c2024;
+    --ok: #7fd4a4; --ok-bg: #173526; --warn: #f1c46a; --warn-bg: #3a2e12;
+    --bad: #f19aa0; --bad-bg: #3d1c1f; --accent: #8db4ec;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 1.7rem; margin: 0 0 4px; }
+h2 { font-size: 1.2rem; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1rem; margin: 0 0 6px; }
+.meta { color: var(--muted); font-size: .9rem; }
+.disclaimer { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--card); color: var(--muted); font-size: .9rem; }
+.summary { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-width: 120px; }
+.stat b { display: block; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+.item { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+.item.unverified { border-color: var(--bad); }
+.headline { font-weight: 600; }
+.sub { color: var(--muted); font-size: .9rem; }
+blockquote { margin: 8px 0 0; padding: 6px 10px; border-left: 3px solid var(--line); color: var(--fg); font-style: italic; }
+.note { color: var(--muted); font-size: .85rem; margin-top: 4px; }
+.warning { color: var(--warn); font-size: .85rem; margin-top: 4px; }
+.badge { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .03em; padding: 2px 7px; border-radius: 999px; vertical-align: middle; font-style: normal; }
+.badge.verified { color: var(--ok); background: var(--ok-bg); }
+.badge.corrected { color: var(--warn); background: var(--warn-bg); }
+.badge.unverified { color: var(--bad); background: var(--bad-bg); }
+a { color: var(--accent); }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; }
+.transcript p { margin: 0 0 10px; padding: 6px 8px; border-radius: 6px; }
+.transcript p.cited { background: var(--card); border: 1px solid var(--line); }
+.transcript p:target { outline: 2px solid var(--accent); }
+.pid { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; color: var(--muted); margin-right: 6px; }
+.change-raised { color: var(--ok); font-weight: 600; }
+.change-lowered { color: var(--bad); font-weight: 600; }
+.change-new, .change-reported { color: var(--accent); font-weight: 600; }
+@media (max-width: 600px) { table { font-size: .85rem; } th, td { padding: 6px 4px; } }
+</style>
+</head>
+<body>
+<main>
+<h1>Fernhill Automation Inc. (fictional): Q3 FY2026 earnings call brief</h1>
+<div class="meta">Source <code>fernhill_q3_fy2026.txt</code> &middot; model <code>fixture (hand-authored)</code> &middot; replayed from fernhill_q3_fy2026.json (no API call)</div>
+<div class="meta">Hand-authored fixture, not a real API response. Written to look like a model reply for the fictional transcript, with four deliberate citation errors that the verifier should catch: a wrong paragraph id, a dash/comma variant, a dropped word and a fabricated figure.</div><p class="disclaimer">Generated with a language model and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice.</p>
+
+<div class="summary">
+  <div class="stat"><b>31</b><span class="badge verified">VERIFIED</span></div>
+  <div class="stat"><b>1</b><span class="badge corrected">CORRECTED</span></div>
+  <div class="stat"><b>1</b><span class="badge unverified">UNVERIFIED</span></div>
+</div>
+<p class="sub">Each quote is checked against the transcript: exact match, then normalised match, then the other paragraphs (to correct a wrong id), then a fuzzy match at similarity &ge; 0.90 with identical numbers. Unverified items are removed and listed at the end.</p>
+
+<h2>Management tone: Constructive <span class="badge verified">VERIFIED</span></h2>
+<div class="item">
+<p>Management reported a record quarter above its own range and raised full-year revenue guidance, which supports a positive label. It was also explicit about weaker European orders and the cash cost of tariffs, and it declined to discuss fiscal 2027 margins, so the tone is constructive rather than confident.</p>
+<blockquote>&ldquo;The third quarter was our strongest quarter to date&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P005">P005</a></blockquote>
+
+<blockquote>&ldquo;decision cycles are clearly longer, and we are planning conservatively for the region&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P009">P009</a></blockquote>
+
+<blockquote>&ldquo;we are not going to give fiscal 2027 guidance today&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P035">P035</a></blockquote>
+
+</div>
+
+<h2>Headline figures</h2>
+<div class="item verified">
+<div class="headline">Revenue: $412.3 million</div>
+<div class="sub">Q3 FY2026 &middot; +14% year over year, from $361.7 million</div>
+<blockquote>&ldquo;third quarter revenue was $412.3 million, up 14% from $361.7 million in the prior-year quarter&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P014">P014</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Annual recurring revenue (ARR): $588 million</div>
+<div class="sub">Q3 FY2026 &middot; +22% year over year</div>
+<blockquote>&ldquo;Annual recurring revenue from our Fernhill Orchestrate software platform reached $588 million at quarter end, up 22% from a year ago&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P006">P006</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Gross margin: 47.8%</div>
+<div class="sub">Q3 FY2026 &middot; 46.1% a year ago</div>
+<blockquote>&ldquo;Gross margin expanded to 47.8%, compared with 46.1% a year ago&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P016">P016</a></blockquote>
+
+
+</div>
+<div class="item corrected">
+<div class="headline">Adjusted operating margin: 15.2%</div>
+<div class="sub">Q3 FY2026 &middot; 13.9% a year ago</div>
+<blockquote>&ldquo;Adjusted operating margin was 15.2%, up from 13.9% in the third quarter of last year&rdquo; <span class="badge corrected">CORRECTED P017-&gt;P016</span> <a href="#P016">P016</a></blockquote>
+<div class="note">Quote found in P016, not in P017; id corrected.</div>
+
+</div>
+<div class="item verified">
+<div class="headline">Adjusted EPS: $0.74</div>
+<div class="sub">Q3 FY2026 &middot; $0.61 a year ago</div>
+<blockquote>&ldquo;Adjusted earnings per share were $0.74, compared with $0.61 a year ago&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P016">P016</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Free cash flow: $38.5 million</div>
+<div class="sub">Q3 FY2026</div>
+<blockquote>&ldquo;Free cash flow was $38.5 million in the quarter&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P018">P018</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Book-to-bill ratio: 1.08</div>
+<div class="sub">Q3 FY2026</div>
+<blockquote>&ldquo;We booked $445 million of new orders in the quarter, which translates into a book-to-bill ratio of 1.08&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P007">P007</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Backlog: $1.21 billion</div>
+<div class="sub">Q3 FY2026 &middot; record level</div>
+<blockquote>&ldquo;our backlog closed the quarter at a record $1.21 billion&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P007">P007</a></blockquote>
+
+
+</div>
+
+<h2>Guidance</h2>
+<div class="item verified">
+<div class="headline">Revenue, FY2026: $1.62 billion to $1.66 billion</div>
+<div class="sub">raised &middot; prior: $1.58 billion to $1.63 billion</div>
+<blockquote>&ldquo;we are raising our fiscal 2026 revenue guidance to a range of $1.62 billion to $1.66 billion, up from our prior range of $1.58 billion to $1.63 billion&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P019">P019</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Adjusted operating margin, FY2026: approximately 15%</div>
+<div class="sub">maintained</div>
+<blockquote>&ldquo;We continue to expect an adjusted operating margin of approximately 15% for the full year&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P019">P019</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Free cash flow, FY2026: $120 million to $135 million</div>
+<div class="sub">lowered &middot; prior: $140 million to $155 million</div>
+<blockquote>&ldquo;We are lowering our fiscal 2026 free cash flow guidance to $120 million to $135 million, compared with our previous range of $140 million to $155 million&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P021">P021</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<div class="headline">Revenue, Q4 FY2026: $435 million to $450 million</div>
+<div class="sub">initiated</div>
+<blockquote>&ldquo;For the fourth quarter, we expect revenue in the range of $435 million to $450 million&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P020">P020</a></blockquote>
+
+
+</div>
+
+<h2>Key risks</h2>
+<div class="item verified">
+<div class="headline">Slower European orders</div>
+<div class="sub">demand</div>
+<p>European grocery and apparel customers are delaying investment decisions; orders fell 9% and the revenue impact lags by two to three quarters.</p>
+<blockquote>&ldquo;European orders were down 9% year over year&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P009">P009</a></blockquote>
+
+</div>
+<div class="item verified">
+<div class="headline">Tariffs on imported components</div>
+<div class="sub">trade / regulation</div>
+<p>New tariffs on motion-control components raise costs; management expects to offset most of it only by mid next year.</p>
+<blockquote>&ldquo;New tariffs on imported motion-control components took effect in August&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P010">P010</a></blockquote>
+
+</div>
+<div class="item verified">
+<div class="headline">Pre-bought inventory ties up cash</div>
+<div class="sub">costs / supply chain</div>
+<p>Securing component supply required an inventory build, which is the main reason free cash flow guidance was cut.</p>
+<blockquote>&ldquo;We have secured supply for the next two quarters, but we pre-bought inventory to do so — and that ties up cash.&rdquo; <span class="badge verified">VERIFIED (normalized)</span> <a href="#P010">P010</a></blockquote>
+<div class="note">Transcript reads: &ldquo;We have secured supply for the next two quarters, but we pre-bought inventory to do so, and that ties up cash.&rdquo;</div>
+</div>
+<div class="item verified">
+<div class="headline">Competitors pricing aggressively on smaller projects</div>
+<div class="sub">pricing / competition</div>
+<p>Fernhill is not matching lower prices, which may cost some deals near term.</p>
+<blockquote>&ldquo;We are seeing some competitors become more aggressive on price for smaller projects&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P032">P032</a></blockquote>
+
+</div>
+<div class="item verified">
+<div class="headline">Customer concentration</div>
+<div class="sub">customer concentration</div>
+<p>The largest customer is 17% of revenue year to date; the renewal reduces but does not remove the risk.</p>
+<blockquote>&ldquo;We do still regard customer concentration as a risk&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P040">P040</a></blockquote>
+
+</div>
+
+<h2>Analyst questions</h2>
+<div class="item verified">
+<h3>Free cash flow guidance cut</h3>
+<div class="sub">Priya Raman, Halcyon Securities &middot; answer: <b>direct</b></div>
+<p><b>Q:</b> Why cut free cash flow guidance by about $20 million while raising revenue, and is it really timing?</p>
+<blockquote>&ldquo;You are raising revenue but cutting free cash flow by about $20 million at the midpoint&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P024">P024</a></blockquote>
+
+<p><b>A:</b> About $15 million is pre-bought inventory and about $5 million absorbed tariff cost; the inventory is tied to backlog projects shipping in the first half of fiscal 2027.</p>
+<blockquote>&ldquo;about $15 million is the component inventory we pre-bought and about $5 million is tariff cost we have absorbed&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P025">P025</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<h3>Pricing to offset tariffs</h3>
+<div class="sub">Priya Raman, Halcyon Securities &middot; answer: <b>direct</b></div>
+<p><b>Q:</b> Does the raised revenue range assume price increases to offset tariffs?</p>
+<blockquote>&ldquo;does the raised revenue range assume any price increases to offset the tariffs?&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P026">P026</a></blockquote>
+
+<p><b>A:</b> Only already-announced increases on new orders since September; the benefit builds mainly in fiscal 2027.</p>
+<blockquote>&ldquo;It includes the price increases we have already announced, which took effect on new orders from September&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P027">P027</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<h3>European demand</h3>
+<div class="sub">Marcus Oyelaran, Ridgefield Partners &middot; answer: <b>partial</b></div>
+<p><b>Q:</b> Is the European slowdown a pause or a shift away from automation, and what is assumed for Q4?</p>
+<blockquote>&ldquo;Is this a temporary pause, or are you seeing customers shift budgets away from automation altogether?&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P029">P029</a></blockquote>
+
+<p><b>A:</b> Described as a delay, not a shift; Q4 assumes European orders stay at Q3 levels; management would not call the bottom.</p>
+<blockquote>&ldquo;What we hear from customers is that projects are still on their roadmaps, but boards are asking for more certainty&rdquo; <span class="badge verified">VERIFIED (fuzzy 0.98)</span> <a href="#P030">P030</a></blockquote>
+<div class="note">Transcript reads: &ldquo;What we hear from customers is that the projects are still on their roadmaps, but boards are asking for more certainty&rdquo;</div>
+
+</div>
+<div class="item verified">
+<h3>Fiscal 2027 margins</h3>
+<div class="sub">Elena Sokolova, Brightline Capital Markets &middot; answer: <b>deflected</b></div>
+<p><b>Q:</b> Should investors expect pricing pressure and lower margins next year?</p>
+<blockquote>&ldquo;should we expect pricing pressure and a step back in margins next year?&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P034">P034</a></blockquote>
+
+<p><b>A:</b> Management declined to give fiscal 2027 guidance before January and pointed to software mix and its margin framework.</p>
+<blockquote>&ldquo;we are not going to give fiscal 2027 guidance today; we will do that in January as usual&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P035">P035</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<h3>Largest customer renewal</h3>
+<div class="sub">Tom Achterberg, Northgate Research &middot; answer: <b>direct</b></div>
+<p><b>Q:</b> Is the multi-year renewal with the largest customer on track?</p>
+<blockquote>&ldquo;is the multi-year contract renewal still on track for this year?&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P039">P039</a></blockquote>
+
+<p><b>A:</b> Signed in October as a five-year agreement; the customer was 17% of revenue year to date.</p>
+<blockquote>&ldquo;I am pleased to say we signed the renewal in October&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P040">P040</a></blockquote>
+
+
+</div>
+<div class="item verified">
+<h3>Orchestrate 5 pricing uplift</h3>
+<div class="sub">Kenji Moreau, Ashgrove &amp; Lyle &middot; answer: <b>direct</b></div>
+<p><b>Q:</b> What is the price uplift from Orchestrate 5 upgrades and when does it reach ARR?</p>
+<blockquote>&ldquo;How should we think about the price uplift per customer, and when does that show up in annual recurring revenue?&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P042">P042</a></blockquote>
+
+<p><b>A:</b> Around 25% subscription uplift for customers taking both modules, flowing into ARR at renewal dates over four to six quarters.</p>
+<blockquote>&ldquo;the upgrade carries an average subscription uplift of around 25% for customers who take both new modules&rdquo; <span class="badge verified">VERIFIED</span> <a href="#P043">P043</a></blockquote>
+
+
+</div>
+
+<h2>Rejected by verification</h2>
+<p class="sub">Returned by the model, but the supporting quote was not found in the transcript. Not part of the brief.</p>
+<div class="item unverified">
+<div class="headline">Headline figures: Net revenue retention (software): 118%</div>
+<div class="note">Cited P006. Quote not found in the transcript. Closest passage: P017 (similarity 0.61).</div>
+</div>
+
+<h2>Transcript</h2>
+<div class="transcript">
+<p id="P001"><span class="pid">P001</span><b>Unknown</b> <span class="sub">(unknown, front matter)</span><br>FICTIONAL EXAMPLE TRANSCRIPT - NOT A REAL COMPANY Fernhill Automation Inc. is invented for this repository. All names, figures, analysts and firms are made up. Nothing here describes a real company or is investment advice.</p>
+<p id="P002"><span class="pid">P002</span><b>Unknown</b> <span class="sub">(unknown, front matter)</span><br>Fernhill Automation Inc. (fictional) Third Quarter Fiscal 2026 Earnings Conference Call</p>
+<p id="P003"><span class="pid">P003</span><b>Operator</b> <span class="sub">(operator, prepared remarks)</span><br>Good morning and welcome to the Fernhill Automation third quarter fiscal 2026 earnings conference call. All participants are in a listen-only mode. After the prepared remarks there will be a question-and-answer session. I would now like to turn the call over to Lena Brandt, Head of Investor Relations.</p>
+<p id="P004"><span class="pid">P004</span><b>Lena Brandt</b> <span class="sub">(management, prepared remarks)</span><br>Thank you, operator, and good morning, everyone. With me today are Dana Whitfield, our Chief Executive Officer, and Martin Okafor, our Chief Financial Officer. Before we begin, please note that today&#39;s discussion contains forward-looking statements that are subject to risks and uncertainties, and actual results may differ materially. We will also refer to non-GAAP measures such as adjusted operating margin and free cash flow; reconciliations are in the earnings release. With that, I will hand it to Dana.</p>
+<p id="P005" class="cited"><span class="pid">P005</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Thank you, Lena, and good morning. The third quarter was our strongest quarter to date. Revenue grew 14% year over year to $412.3 million, ahead of the top end of the range we gave you in July. Demand for our warehouse automation systems remained healthy in North America, and our recurring software business continued to compound.</p>
+<p id="P006" class="cited"><span class="pid">P006</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Annual recurring revenue from our Fernhill Orchestrate software platform reached $588 million at quarter end, up 22% from a year ago. Software now represents a little over a third of total revenue, and every system we install creates a long tail of subscription and service revenue. That mix shift is the single most important driver of our margin story.</p>
+<p id="P007" class="cited"><span class="pid">P007</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Orders were also strong. We booked $445 million of new orders in the quarter, which translates into a book-to-bill ratio of 1.08, and our backlog closed the quarter at a record $1.21 billion. Roughly 60% of that backlog is scheduled to convert to revenue over the next twelve months, which gives us good visibility into the fourth quarter and into fiscal 2027.</p>
+<p id="P008"><span class="pid">P008</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Among the new orders, we signed two multi-site agreements with North American third-party logistics providers, each covering more than ten distribution centers, and our first project with a regional pharmaceutical distributor. Those wins matter because they are repeatable: once a customer has standardized on Fernhill at a few sites, the next sites are faster to sell and cheaper to install.</p>
+<p id="P009" class="cited"><span class="pid">P009</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>I do want to be clear about two areas where conditions are tougher. First, Europe. Order intake from European grocery and apparel customers slowed in the quarter, and several customers pushed final investment decisions into next year. European orders were down 9% year over year. We are not seeing cancellations, but decision cycles are clearly longer, and we are planning conservatively for the region.</p>
+<p id="P010" class="cited"><span class="pid">P010</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Second, component costs. New tariffs on imported motion-control components took effect in August. We have secured supply for the next two quarters, but we pre-bought inventory to do so, and that ties up cash. We expect to offset most of the cost impact through pricing and sourcing changes by the middle of next year, but there will be a timing gap.</p>
+<p id="P011"><span class="pid">P011</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>Strategically, we launched Orchestrate 5 in September, which adds predictive maintenance and labor planning modules. Early adoption has been encouraging, with 41 existing customers signing upgrades in the first four weeks. We also opened our new integration center in Monterrey, Mexico, which will shorten installation times for customers in North America.</p>
+<p id="P012"><span class="pid">P012</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>On capital allocation, our priorities have not changed. We invest first in research and development and in our installation capacity, then in small, software-focused acquisitions, and we return excess cash to shareholders. During the quarter we repurchased $12 million of shares under the $50 million program the board approved in March.</p>
+<p id="P013"><span class="pid">P013</span><b>Dana Whitfield</b> <span class="sub">(management, prepared remarks)</span><br>With that, let me hand over to Martin for the financial details.</p>
+<p id="P014" class="cited"><span class="pid">P014</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>Thanks, Dana, and good morning, everyone. As Dana said, third quarter revenue was $412.3 million, up 14% from $361.7 million in the prior-year quarter. Systems revenue was $268.1 million, up 10%, and software and services revenue was $144.2 million, up 23%.</p>
+<p id="P015"><span class="pid">P015</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>By region, North America grew 21% and represented 68% of revenue. Europe declined 4% and represented 24% of revenue, and the rest of the world made up the remaining 8%. Because European projects are recognized over the installation period, the slowdown in European orders shows up in revenue with a lag of two to three quarters.</p>
+<p id="P016" class="cited"><span class="pid">P016</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>Gross margin expanded to 47.8%, compared with 46.1% a year ago. The improvement came from the richer software mix and better project execution, partly offset by about 40 basis points of tariff-related component costs. Adjusted operating margin was 15.2%, up from 13.9% in the third quarter of last year. Adjusted earnings per share were $0.74, compared with $0.61 a year ago.</p>
+<p id="P017"><span class="pid">P017</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>Operating expenses were $134.4 million, or 32.6% of revenue, compared with 32.2% a year ago. The increase reflects higher research and development spending ahead of the Orchestrate 5 launch and the start-up costs of the Monterrey integration center. We expect operating expenses as a percentage of revenue to come down in the fourth quarter as those one-off costs roll off.</p>
+<p id="P018" class="cited"><span class="pid">P018</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>Free cash flow was $38.5 million in the quarter. That is lower than we would normally expect at this revenue level, and the reason is the inventory build Dana described. We added roughly $31 million of component inventory ahead of the tariff changes. We ended the quarter with $214 million of cash and a net leverage ratio of 0.9 times adjusted EBITDA.</p>
+<p id="P019" class="cited"><span class="pid">P019</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>Now to our outlook. Based on the strength of our backlog, we are raising our fiscal 2026 revenue guidance to a range of $1.62 billion to $1.66 billion, up from our prior range of $1.58 billion to $1.63 billion. We continue to expect an adjusted operating margin of approximately 15% for the full year.</p>
+<p id="P020" class="cited"><span class="pid">P020</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>For the fourth quarter, we expect revenue in the range of $435 million to $450 million.</p>
+<p id="P021" class="cited"><span class="pid">P021</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>We are lowering our fiscal 2026 free cash flow guidance to $120 million to $135 million, compared with our previous range of $140 million to $155 million. The reduction reflects the inventory investment and the timing of tariff costs, not a change in the underlying cash generation of the business. We expect working capital to normalize during the first half of fiscal 2027.</p>
+<p id="P022"><span class="pid">P022</span><b>Martin Okafor</b> <span class="sub">(management, prepared remarks)</span><br>With that, operator, please open the line for questions.</p>
+<p id="P023"><span class="pid">P023</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>Thank you. We will now begin the question-and-answer session. Our first question comes from Priya Raman with Halcyon Securities. Please go ahead.</p>
+<p id="P024" class="cited"><span class="pid">P024</span><b>Priya Raman</b> <span class="sub">(analyst, Q&amp;A)</span><br>Good morning, and congratulations on the quarter. Martin, I want to push on the cash flow guide. You are raising revenue but cutting free cash flow by about $20 million at the midpoint. How much of that is truly timing, and how confident are you that the inventory comes back out of the balance sheet next year?</p>
+<p id="P025" class="cited"><span class="pid">P025</span><b>Martin Okafor</b> <span class="sub">(management, Q&amp;A)</span><br>Thanks, Priya. Of the roughly $20 million reduction at the midpoint, about $15 million is the component inventory we pre-bought and about $5 million is tariff cost we have absorbed and not yet passed through. The inventory is allocated to specific projects in our backlog that ship in the first half of fiscal 2027, so we have line of sight on when it converts. I would call it timing, and we will report progress on it every quarter.</p>
+<p id="P026" class="cited"><span class="pid">P026</span><b>Priya Raman</b> <span class="sub">(analyst, Q&amp;A)</span><br>That is helpful. Thank you. And just a quick follow-up: does the raised revenue range assume any price increases to offset the tariffs?</p>
+<p id="P027" class="cited"><span class="pid">P027</span><b>Martin Okafor</b> <span class="sub">(management, Q&amp;A)</span><br>It includes the price increases we have already announced, which took effect on new orders from September. It does not include anything further. Because of our backlog, most of the revenue we recognize in the fourth quarter was priced before the tariffs, so the pricing benefit builds mainly in fiscal 2027.</p>
+<p id="P028"><span class="pid">P028</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>Our next question comes from Marcus Oyelaran with Ridgefield Partners. Please go ahead.</p>
+<p id="P029" class="cited"><span class="pid">P029</span><b>Marcus Oyelaran</b> <span class="sub">(analyst, Q&amp;A)</span><br>Thanks. Dana, on Europe, you said orders were down 9%. Is this a temporary pause, or are you seeing customers shift budgets away from automation altogether? And what are you assuming for Europe in the fourth quarter?</p>
+<p id="P030" class="cited"><span class="pid">P030</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>Good question, Marcus. What we hear from customers is that the projects are still on their roadmaps, but boards are asking for more certainty on interest rates and consumer demand before they commit. So it is a delay rather than a shift away from automation. For the fourth quarter guide we have assumed that European orders stay at roughly the third quarter level. I would not want to call the bottom yet.</p>
+<p id="P031"><span class="pid">P031</span><b>Marcus Oyelaran</b> <span class="sub">(analyst, Q&amp;A)</span><br>Understood. And are you seeing more competitive pricing in Europe as a result?</p>
+<p id="P032" class="cited"><span class="pid">P032</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>We are seeing some competitors become more aggressive on price for smaller projects. We have chosen not to follow them below the levels where we can earn our target returns, and that may cost us a few deals in the near term.</p>
+<p id="P033"><span class="pid">P033</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>Our next question comes from Elena Sokolova with Brightline Capital Markets. Please go ahead.</p>
+<p id="P034" class="cited"><span class="pid">P034</span><b>Elena Sokolova</b> <span class="sub">(analyst, Q&amp;A)</span><br>Hi, thanks for taking my question. You expanded gross margin by 170 basis points this quarter. As tariffs flow through and you try to win European deals in a slower market, should we expect pricing pressure and a step back in margins next year?</p>
+<p id="P035" class="cited"><span class="pid">P035</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>Elena, we are not going to give fiscal 2027 guidance today; we will do that in January as usual. What I can say is that the software mix keeps moving in our favor and that we have a track record of protecting price. We are confident in the long-term margin framework we laid out at our investor day.</p>
+<p id="P036"><span class="pid">P036</span><b>Elena Sokolova</b> <span class="sub">(analyst, Q&amp;A)</span><br>But directionally, would you expect gross margin next year to be higher or lower than this year?</p>
+<p id="P037"><span class="pid">P037</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>Again, I would rather not get ahead of the January guidance. There are moving parts on both sides, and we want to give you one complete picture.</p>
+<p id="P038"><span class="pid">P038</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>Our next question comes from Tom Achterberg with Northgate Research. Please go ahead.</p>
+<p id="P039" class="cited"><span class="pid">P039</span><b>Tom Achterberg</b> <span class="sub">(analyst, Q&amp;A)</span><br>Good morning. Your largest customer was about 18% of revenue last year. Can you update us on that relationship, and is the multi-year contract renewal still on track for this year?</p>
+<p id="P040" class="cited"><span class="pid">P040</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>Yes, Tom. Our largest customer accounted for 17% of revenue year to date, and I am pleased to say we signed the renewal in October. It is a five-year agreement that covers both new sites and software subscriptions across their existing network. We do still regard customer concentration as a risk, and diversifying the customer base remains a priority for us.</p>
+<p id="P041"><span class="pid">P041</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>Our next question comes from Kenji Moreau with Ashgrove &amp; Lyle. Please go ahead.</p>
+<p id="P042" class="cited"><span class="pid">P042</span><b>Kenji Moreau</b> <span class="sub">(analyst, Q&amp;A)</span><br>Thanks. On Orchestrate 5, 41 upgrades in four weeks is a good start. How should we think about the price uplift per customer, and when does that show up in annual recurring revenue?</p>
+<p id="P043" class="cited"><span class="pid">P043</span><b>Martin Okafor</b> <span class="sub">(management, Q&amp;A)</span><br>Kenji, the upgrade carries an average subscription uplift of around 25% for customers who take both new modules. Upgrades are billed annually in advance, so you will see the effect in annual recurring revenue as each customer reaches its renewal date. Most of the benefit therefore lands over the next four to six quarters rather than in the fourth quarter.</p>
+<p id="P044"><span class="pid">P044</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>This concludes our question-and-answer session. I would like to turn the call back to Dana Whitfield for closing remarks.</p>
+<p id="P045"><span class="pid">P045</span><b>Dana Whitfield</b> <span class="sub">(management, Q&amp;A)</span><br>Thank you, everyone. To sum up, we delivered record revenue, expanded margins, raised our revenue outlook and grew our software base by more than 20%. We are being realistic about Europe and about the cash impact of tariffs, and we will keep you updated. Thank you for joining us today.</p>
+<p id="P046"><span class="pid">P046</span><b>Operator</b> <span class="sub">(operator, Q&amp;A)</span><br>This concludes today&#39;s conference call. You may now disconnect.</p>
+</div>
+</main>
+</body>
+</html>

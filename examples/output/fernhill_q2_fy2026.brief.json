@@ -1,0 +1,626 @@
+{
+  "company": "Fernhill Automation Inc. (fictional)",
+  "period": "Q2 FY2026",
+  "headline_figures": [
+    {
+      "item": {
+        "metric": "Revenue",
+        "value": "$395.6 million",
+        "period": "Q2 FY2026",
+        "comparison": "+11% year over year, from $356.4 million",
+        "evidence": {
+          "paragraph_id": "P011",
+          "quote": "Second quarter revenue was $395.6 million, up 11% from $356.4 million a year ago"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P011",
+          "found_id": "P011",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Second quarter revenue was $395.6 million, up 11% from $356.4 million a year ago",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Annual recurring revenue (ARR)",
+        "value": "$552 million",
+        "period": "Q2 FY2026",
+        "comparison": "+20% year over year",
+        "evidence": {
+          "paragraph_id": "P006",
+          "quote": "Annual recurring revenue from Fernhill Orchestrate reached $552 million at quarter end, an increase of 20% from a year ago"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P006",
+          "found_id": "P006",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Annual recurring revenue from Fernhill Orchestrate reached $552 million at quarter end, an increase of 20% from a year ago",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Gross margin",
+        "value": "46.9%",
+        "period": "Q2 FY2026",
+        "comparison": "45.8% a year ago",
+        "evidence": {
+          "paragraph_id": "P012",
+          "quote": "Gross margin was 46.9%, up from 45.8% in the prior-year quarter"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P012",
+          "found_id": "P012",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Gross margin was 46.9%, up from 45.8% in the prior-year quarter",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Adjusted operating margin",
+        "value": "14.6%",
+        "period": "Q2 FY2026",
+        "comparison": null,
+        "evidence": {
+          "paragraph_id": "P012",
+          "quote": "Adjusted operating margin was 14.6%, and adjusted earnings per share were $0.68"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P012",
+          "found_id": "P012",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Adjusted operating margin was 14.6%, and adjusted earnings per share were $0.68",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Adjusted EPS",
+        "value": "$0.68",
+        "period": "Q2 FY2026",
+        "comparison": "$0.57 a year ago",
+        "evidence": {
+          "paragraph_id": "P012",
+          "quote": "adjusted earnings per share were $0.68, compared with $0.57 a year ago"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P012",
+          "found_id": "P012",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "adjusted earnings per share were $0.68, compared with $0.57 a year ago",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Free cash flow",
+        "value": "$41.2 million",
+        "period": "Q2 FY2026",
+        "comparison": null,
+        "evidence": {
+          "paragraph_id": "P013",
+          "quote": "Free cash flow in the quarter was $41.2 million"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P013",
+          "found_id": "P013",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Free cash flow in the quarter was $41.2 million",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Book-to-bill ratio",
+        "value": "1.05",
+        "period": "Q2 FY2026",
+        "comparison": null,
+        "evidence": {
+          "paragraph_id": "P007",
+          "quote": "We booked $415 million of orders, a book-to-bill of 1.05"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P007",
+          "found_id": "P007",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "We booked $415 million of orders, a book-to-bill of 1.05",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Backlog",
+        "value": "$1.17 billion",
+        "period": "Q2 FY2026",
+        "comparison": null,
+        "evidence": {
+          "paragraph_id": "P007",
+          "quote": "ended the quarter with a backlog of $1.17 billion"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P007",
+          "found_id": "P007",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "ended the quarter with a backlog of $1.17 billion",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    }
+  ],
+  "guidance": [
+    {
+      "item": {
+        "metric": "Revenue",
+        "period": "FY2026",
+        "current": "$1.58 billion to $1.63 billion",
+        "prior": "$1.55 billion to $1.60 billion",
+        "direction": "raised",
+        "evidence": {
+          "paragraph_id": "P014",
+          "quote": "We are raising our fiscal 2026 revenue outlook to a range of $1.58 billion to $1.63 billion, up from $1.55 billion to $1.60 billion previously"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P014",
+          "found_id": "P014",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "We are raising our fiscal 2026 revenue outlook to a range of $1.58 billion to $1.63 billion, up from $1.55 billion to $1.60 billion previously",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Adjusted operating margin",
+        "period": "FY2026",
+        "current": "approximately 15%",
+        "prior": null,
+        "direction": "maintained",
+        "evidence": {
+          "paragraph_id": "P014",
+          "quote": "We continue to expect an adjusted operating margin of approximately 15% for the full year"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P014",
+          "found_id": "P014",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "We continue to expect an adjusted operating margin of approximately 15% for the full year",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Free cash flow",
+        "period": "FY2026",
+        "current": "$140 million to $155 million",
+        "prior": null,
+        "direction": "maintained",
+        "evidence": {
+          "paragraph_id": "P014",
+          "quote": "we are maintaining our free cash flow guidance of $140 million to $155 million"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P014",
+          "found_id": "P014",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "we are maintaining our free cash flow guidance of $140 million to $155 million",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "metric": "Revenue",
+        "period": "Q3 FY2026",
+        "current": "$400 million to $415 million",
+        "prior": null,
+        "direction": "initiated",
+        "evidence": {
+          "paragraph_id": "P015",
+          "quote": "For the third quarter, we expect revenue of $400 million to $415 million"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P015",
+          "found_id": "P015",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "For the third quarter, we expect revenue of $400 million to $415 million",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    }
+  ],
+  "tone": {
+    "item": {
+      "label": "balanced",
+      "justification": "Results grew and the revenue outlook was raised, but management spent much of the call on headwinds: component lead times, mid-market price competition, technician wage inflation and an open renewal with its largest customer. Positive numbers combined with several openly named risks make the tone balanced.",
+      "evidence": [
+        {
+          "paragraph_id": "P005",
+          "quote": "We delivered a solid second quarter. Revenue was $395.6 million, up 11% year over year"
+        },
+        {
+          "paragraph_id": "P008",
+          "quote": "There are three things we are watching closely"
+        },
+        {
+          "paragraph_id": "P024",
+          "quote": "We lost a handful of smaller deals this quarter where competitors priced well below us"
+        }
+      ]
+    },
+    "checks": [
+      {
+        "cited_id": "P005",
+        "found_id": "P005",
+        "status": "verified",
+        "method": "exact",
+        "score": 1.0,
+        "matched_text": "We delivered a solid second quarter. Revenue was $395.6 million, up 11% year over year",
+        "note": "Found in the cited paragraph."
+      },
+      {
+        "cited_id": "P008",
+        "found_id": "P008",
+        "status": "verified",
+        "method": "exact",
+        "score": 1.0,
+        "matched_text": "There are three things we are watching closely",
+        "note": "Found in the cited paragraph."
+      },
+      {
+        "cited_id": "P024",
+        "found_id": "P024",
+        "status": "verified",
+        "method": "exact",
+        "score": 1.0,
+        "matched_text": "We lost a handful of smaller deals this quarter where competitors priced well below us",
+        "note": "Found in the cited paragraph."
+      }
+    ],
+    "status": "verified",
+    "warnings": []
+  },
+  "risks": [
+    {
+      "item": {
+        "title": "Long component lead times",
+        "category": "costs_supply_chain",
+        "description": "Some motion-control components take longer to source, forcing costly expedited shipments.",
+        "evidence": {
+          "paragraph_id": "P008",
+          "quote": "lead times for certain motion-control components remain longer than we would like"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P008",
+          "found_id": "P008",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "lead times for certain motion-control components remain longer than we would like",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "title": "Mid-market price competition",
+        "category": "pricing_competition",
+        "description": "Competitors are pricing aggressively on smaller single-site projects.",
+        "evidence": {
+          "paragraph_id": "P008",
+          "quote": "we see more aggressive pricing from competitors in the mid-market segment"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P008",
+          "found_id": "P008",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "we see more aggressive pricing from competitors in the mid-market segment",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "title": "Installation technician wage inflation",
+        "category": "execution",
+        "description": "Labor costs for installations are rising faster than planned and pressure project margins.",
+        "evidence": {
+          "paragraph_id": "P008",
+          "quote": "wage inflation for installation technicians is running ahead of our plan"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P008",
+          "found_id": "P008",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "wage inflation for installation technicians is running ahead of our plan",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "title": "Largest customer renewal pending",
+        "category": "customer_concentration",
+        "description": "The largest customer was about 18% of revenue and its multi-year contract is under renegotiation.",
+        "evidence": {
+          "paragraph_id": "P009",
+          "quote": "until the contract is signed we treat it as a risk"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P009",
+          "found_id": "P009",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "until the contract is signed we treat it as a risk",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    }
+  ],
+  "analyst_questions": [
+    {
+      "item": {
+        "analyst": "Priya Raman",
+        "firm": "Halcyon Securities",
+        "topic": "Gross margin headwinds",
+        "question_summary": "How large were expedite and labor headwinds, and is the software mix benefit sustainable?",
+        "answer_summary": "About 60 basis points combined; expedite costs should fade, labor inflation is more structural; mix benefit sustainable.",
+        "answer_quality": "direct",
+        "question_evidence": {
+          "paragraph_id": "P017",
+          "quote": "Can you size those headwinds, and how much of the software mix benefit is sustainable?"
+        },
+        "answer_evidence": {
+          "paragraph_id": "P018",
+          "quote": "Expedite costs and labor inflation together were roughly 60 basis points of headwind in the quarter"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P017",
+          "found_id": "P017",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Can you size those headwinds, and how much of the software mix benefit is sustainable?",
+          "note": "Found in the cited paragraph."
+        },
+        {
+          "cited_id": "P018",
+          "found_id": "P018",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Expedite costs and labor inflation together were roughly 60 basis points of headwind in the quarter",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "analyst": "Tom Achterberg",
+        "firm": "Northgate Research",
+        "topic": "Largest customer renewal",
+        "question_summary": "What is the timeline for the renewal and will pricing terms change?",
+        "answer_summary": "Expected in the second half; management would not discuss pricing terms during negotiations.",
+        "answer_quality": "partial",
+        "question_evidence": {
+          "paragraph_id": "P020",
+          "quote": "On the renewal with your largest customer, what is the timeline, and should we expect any change in pricing terms?"
+        },
+        "answer_evidence": {
+          "paragraph_id": "P021",
+          "quote": "I will not go into pricing terms while we are negotiating"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P020",
+          "found_id": "P020",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "On the renewal with your largest customer, what is the timeline, and should we expect any change in pricing terms?",
+          "note": "Found in the cited paragraph."
+        },
+        {
+          "cited_id": "P021",
+          "found_id": "P021",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "I will not go into pricing terms while we are negotiating",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "analyst": "Marcus Oyelaran",
+        "firm": "Ridgefield Partners",
+        "topic": "Mid-market pricing",
+        "question_summary": "Is Fernhill losing deals to cheaper competitors, and will it compete on price?",
+        "answer_summary": "A handful of smaller deals were lost; Fernhill competes on total cost of ownership, and large projects are not affected.",
+        "answer_quality": "direct",
+        "question_evidence": {
+          "paragraph_id": "P023",
+          "quote": "Are you losing deals, and are you willing to compete on price there?"
+        },
+        "answer_evidence": {
+          "paragraph_id": "P024",
+          "quote": "Our approach is to compete on total cost of ownership and software capability, not on upfront price"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P023",
+          "found_id": "P023",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Are you losing deals, and are you willing to compete on price there?",
+          "note": "Found in the cited paragraph."
+        },
+        {
+          "cited_id": "P024",
+          "found_id": "P024",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Our approach is to compete on total cost of ownership and software capability, not on upfront price",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    },
+    {
+      "item": {
+        "analyst": "Elena Sokolova",
+        "firm": "Brightline Capital Markets",
+        "topic": "Capital allocation",
+        "question_summary": "How is capital allocated at one times leverage, and are acquisitions on the table?",
+        "answer_summary": "Organic investment first, then small software acquisitions; a $50 million buyback program adds flexibility.",
+        "answer_quality": "direct",
+        "question_evidence": {
+          "paragraph_id": "P026",
+          "quote": "how are you thinking about capital allocation, and are acquisitions on the table?"
+        },
+        "answer_evidence": {
+          "paragraph_id": "P027",
+          "quote": "Our first priority remains organic investment, especially in research and development and installation capacity"
+        }
+      },
+      "checks": [
+        {
+          "cited_id": "P026",
+          "found_id": "P026",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "how are you thinking about capital allocation, and are acquisitions on the table?",
+          "note": "Found in the cited paragraph."
+        },
+        {
+          "cited_id": "P027",
+          "found_id": "P027",
+          "status": "verified",
+          "method": "exact",
+          "score": 1.0,
+          "matched_text": "Our first priority remains organic investment, especially in research and development and installation capacity",
+          "note": "Found in the cited paragraph."
+        }
+      ],
+      "status": "verified",
+      "warnings": []
+    }
+  ],
+  "rejected": [],
+  "policy": "drop",
+  "fuzzy_threshold": 0.9
+}
