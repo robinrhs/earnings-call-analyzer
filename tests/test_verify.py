@@ -205,6 +205,11 @@ def traps():
         ("P003", "and revenue was up 5 million units", "starts inside '2.5'"),
         (
             "P002",
+            "We now expect full-year revenue of $1.70 billion to $1.66 billion",
+            "1.62 became 1.70",
+        ),
+        (
+            "P002",
             "We now expect full-year revenue of $1.62 million to $1.66 million",
             "billion became million",
         ),
