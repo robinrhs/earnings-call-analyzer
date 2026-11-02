@@ -142,7 +142,7 @@ Schema (every item has `evidence: {paragraph_id, quote}`):
 |---|---|
 | `headline_figures` | metric, value, period, comparison |
 | `guidance` | metric, period, current, prior (only if stated on the call), direction: raised / lowered / maintained / initiated / withdrawn / not_stated |
-| `tone` | label: defensive / cautious / balanced / constructive / confident, justification, 2-3 quotes |
+| `tone` | label: defensive / cautious / balanced / constructive / confident, justification, quotes (the schema asks for 2-3 but does not enforce the count; a tone with no quote is unverified) |
 | `risks` | title, category (fixed list, e.g. demand, pricing_competition, costs_supply_chain), description |
 | `analyst_questions` | analyst, firm, topic, question and answer summary, answer quality: direct / partial / deflected, one quote each for question and answer |
 
