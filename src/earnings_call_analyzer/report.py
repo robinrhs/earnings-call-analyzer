@@ -8,6 +8,7 @@ to the paragraph in the transcript appendix at the bottom of the same file.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Literal
 
 from jinja2 import Environment, PackageLoader, StrictUndefined
 
@@ -15,11 +16,26 @@ from .compare import Comparison
 from .transcript import SECTION_LABELS, Transcript
 from .verify import QuoteCheck, VerifiedBrief
 
-DISCLAIMER = (
-    "Generated with a language model and checked automatically against the transcript. "
+# The first sentence says where the content came from; it must be literally true.
+ORIGIN_SENTENCES = {
+    "model": "Generated with a language model and checked automatically against the transcript.",
+    "fixture": (
+        "Built from a hand-authored fixture that stands in for a model response "
+        "(no language model was called) and checked automatically against the transcript."
+    ),
+    "mixed": (
+        "Built partly from a language model response and partly from a hand-authored "
+        "fixture (see the sources below), and checked automatically against the transcript."
+    ),
+}
+CAVEAT = (
     "Verification shows that a quote exists, not that the interpretation is right. "
     "This is a research aid, not investment advice."
 )
+# Kept for callers that want the wording of a normal model run.
+DISCLAIMER = f"{ORIGIN_SENTENCES['model']} {CAVEAT}"
+
+Origin = Literal["model", "fixture"]
 
 
 @dataclass(frozen=True)
@@ -28,6 +44,15 @@ class ReportMeta:
     model: str
     generated_by: str  # "Anthropic API, ... tokens" or "replayed from file.json"
     note: str = ""  # e.g. the note stored in a replay file
+    # "model": a real API response (live or a recording); "fixture": hand-authored.
+    origin: Origin = "model"
+
+
+def disclaimer(*metas: ReportMeta) -> str:
+    """The banner at the top of a report, naming the true origin of its content."""
+    origins = {meta.origin for meta in metas}
+    key = origins.pop() if len(origins) == 1 else "mixed"
+    return f"{ORIGIN_SENTENCES[key]} {CAVEAT}"
 
 
 def check_badge(check: QuoteCheck) -> str:
@@ -85,7 +110,9 @@ def _cited_ids(brief: VerifiedBrief) -> set[str]:
 
 def render_brief_markdown(brief: VerifiedBrief, meta: ReportMeta) -> str:
     template = _environment(autoescape=False).get_template("brief.md.j2")
-    return template.render(brief=brief, meta=meta, counts=brief.counts(), disclaimer=DISCLAIMER)
+    return template.render(
+        brief=brief, meta=meta, counts=brief.counts(), disclaimer=disclaimer(meta)
+    )
 
 
 def render_brief_html(brief: VerifiedBrief, transcript: Transcript, meta: ReportMeta) -> str:
@@ -94,7 +121,7 @@ def render_brief_html(brief: VerifiedBrief, transcript: Transcript, meta: Report
         brief=brief,
         meta=meta,
         counts=brief.counts(),
-        disclaimer=DISCLAIMER,
+        disclaimer=disclaimer(meta),
         transcript=transcript,
         cited=_cited_ids(brief),
     )
@@ -104,11 +131,21 @@ def render_comparison_markdown(
     comparison: Comparison, previous: ReportMeta, current: ReportMeta
 ) -> str:
     template = _environment(autoescape=False).get_template("compare.md.j2")
-    return template.render(c=comparison, previous=previous, current=current, disclaimer=DISCLAIMER)
+    return template.render(
+        c=comparison,
+        previous=previous,
+        current=current,
+        disclaimer=disclaimer(previous, current),
+    )
 
 
 def render_comparison_html(
     comparison: Comparison, previous: ReportMeta, current: ReportMeta
 ) -> str:
     template = _environment(autoescape=True).get_template("compare.html.j2")
-    return template.render(c=comparison, previous=previous, current=current, disclaimer=DISCLAIMER)
+    return template.render(
+        c=comparison,
+        previous=previous,
+        current=current,
+        disclaimer=disclaimer(previous, current),
+    )

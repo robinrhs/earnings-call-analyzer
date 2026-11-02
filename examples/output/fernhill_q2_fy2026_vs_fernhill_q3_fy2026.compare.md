@@ -1,6 +1,6 @@
 # Quarter-over-quarter: Fernhill Automation Inc. (fictional), Q2 FY2026 vs Q3 FY2026
 
-> Generated with a language model and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice.
+> Built from a hand-authored fixture that stands in for a model response (no language model was called) and checked automatically against the transcript. Verification shows that a quote exists, not that the interpretation is right. This is a research aid, not investment advice.
 
 - Previous call: `fernhill_q2_fy2026.txt` (model `fixture (hand-authored)`, replayed from fernhill_q2_fy2026.json (no API call))
 - Current call: `fernhill_q3_fy2026.txt` (model `fixture (hand-authored)`, replayed from fernhill_q3_fy2026.json (no API call))

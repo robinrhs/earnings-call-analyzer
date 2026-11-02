@@ -14,6 +14,7 @@ from .compare import Comparison, compare_briefs
 from .llm import Effort, LLMResult, call_claude, load_replay, resolve_model, save_recording
 from .pricing import cost_usd
 from .report import (
+    Origin,
     ReportMeta,
     render_brief_html,
     render_brief_markdown,
@@ -74,6 +75,17 @@ def _describe_source(llm: LLMResult, replay: str | Path | None) -> str:
     )
 
 
+# Model id written into hand-authored replay files (see examples/replay/).
+FIXTURE_MODEL_PREFIX = "fixture"
+
+
+def _origin(llm: LLMResult) -> Origin:
+    """A replay whose model id starts with 'fixture' was written by hand, not by a model."""
+    if llm.source == "replay" and llm.model.casefold().startswith(FIXTURE_MODEL_PREFIX):
+        return "fixture"
+    return "model"
+
+
 def analyze_file(
     path: str | Path,
     *,
@@ -99,6 +111,7 @@ def analyze_file(
         model=llm.model,
         generated_by=_describe_source(llm, replay),
         note=llm.note,
+        origin=_origin(llm),
     )
     return AnalysisResult(transcript=transcript, llm=llm, verified=verified, meta=meta)
 

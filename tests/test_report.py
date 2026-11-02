@@ -100,3 +100,43 @@ def test_comparison_reports_list_items_that_were_not_compared(q3):
     assert "## Not compared\n\n- Q3 FY2026: guidance 'Revenue (FY2026)' not compared" in md
     html = render_comparison_html(comparison, META, META)
     assert "<h2>Not compared</h2>" in html and "&lt;test&gt;" in html
+
+
+def test_banner_names_the_true_origin_of_the_content(q3):
+    transcript, verified = q3
+    fixture = ReportMeta(
+        source="call.txt", model="fixture (hand-authored)", generated_by="x", origin="fixture"
+    )
+    model = ReportMeta(source="call.txt", model="claude-opus-5-5", generated_by="x")
+    fixture_md = render_brief_markdown(verified, fixture)
+    assert "> Built from a hand-authored fixture" in fixture_md
+    assert "no language model was called" in fixture_md
+    assert "Generated with a language model" not in fixture_md
+    assert "> Generated with a language model" in render_brief_markdown(verified, model)
+    assert "hand-authored fixture" in render_brief_html(verified, transcript, fixture)
+
+    comparison = compare_briefs(verified, verified)
+    assert "> Built partly from a language model response and partly from a hand-authored" in (
+        render_comparison_markdown(comparison, model, fixture)
+    )
+    assert "Built from a hand-authored fixture" in render_comparison_html(
+        comparison, fixture, fixture
+    )
+
+
+def test_origin_of_replays_and_api_runs(tmp_path):
+    from earnings_call_analyzer.llm import Usage, save_recording
+    from earnings_call_analyzer.pipeline import analyze_file
+
+    q3 = EXAMPLES / "fernhill_q3_fy2026.txt"
+    fixture = analyze_file(q3, replay=EXAMPLES / "replay" / "fernhill_q3_fy2026.json")
+    assert fixture.meta.origin == "fixture"
+
+    # A recording of a real API response is model output, even though it is replayed.
+    recorded = tmp_path / "recorded.json"
+    llm = load_replay(EXAMPLES / "replay" / "fernhill_q3_fy2026.json")
+    real = type(llm)(
+        brief=llm.brief, model="claude-opus-5-5", usage=Usage(1, 1), source="api", note=""
+    )
+    save_recording(recorded, real, llm.brief.model_dump_json())
+    assert analyze_file(q3, replay=recorded).meta.origin == "model"
