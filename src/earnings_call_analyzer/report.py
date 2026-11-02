@@ -32,9 +32,6 @@ CAVEAT = (
     "Verification shows that a quote exists, not that the interpretation is right. "
     "This is a research aid, not investment advice."
 )
-# Kept for callers that want the wording of a normal model run.
-DISCLAIMER = f"{ORIGIN_SENTENCES['model']} {CAVEAT}"
-
 Origin = Literal["model", "fixture"]
 
 
