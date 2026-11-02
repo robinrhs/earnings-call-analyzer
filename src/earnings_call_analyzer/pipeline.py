@@ -56,11 +56,21 @@ def _describe_source(llm: LLMResult, replay: str | Path | None) -> str:
         return f"replayed from {name} (no API call)"
     if llm.usage is None:
         return "Anthropic API"
-    cost = cost_usd(llm.model, llm.usage.input_tokens, llm.usage.output_tokens)
+    usage = llm.usage
+    if usage.attempts:
+        # Server-side fallback: price every attempt at the model that ran it.
+        costs = [cost_usd(a.model, a.input_tokens, a.output_tokens) for a in usage.attempts]
+        cost = None if None in costs else sum(c for c in costs if c is not None)
+    else:
+        cost = cost_usd(llm.model, usage.input_tokens, usage.output_tokens)
+    attempts_text = ""
+    if len(usage.attempts) > 1:
+        models = ", ".join(a.model for a in usage.attempts)
+        attempts_text = f" over {len(usage.attempts)} attempts ({models})"
     cost_text = f", about ${cost:.2f} at list prices" if cost is not None else ""
     return (
-        f"Anthropic API, {llm.usage.input_tokens:,} input / "
-        f"{llm.usage.output_tokens:,} output tokens{cost_text}"
+        f"Anthropic API, {usage.input_tokens:,} input / "
+        f"{usage.output_tokens:,} output tokens{attempts_text}{cost_text}"
     )
 
 

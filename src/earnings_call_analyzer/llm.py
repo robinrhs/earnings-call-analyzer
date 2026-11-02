@@ -48,9 +48,52 @@ class LLMError(RuntimeError):
 
 
 @dataclass(frozen=True)
-class Usage:
+class Attempt:
+    """Token usage of one model attempt within a request."""
+
+    model: str
     input_tokens: int
     output_tokens: int
+
+
+@dataclass(frozen=True)
+class Usage:
+    """Token counts of a request, summed over all its attempts.
+
+    With server-side fallbacks one request can run more than one model: the first
+    attempt declines, a fallback model answers. The top-level ``usage`` of the reply
+    covers only the attempt that produced the message; ``usage.iterations`` lists every
+    attempt. ``attempts`` keeps that list so each attempt is priced at its own model.
+    """
+
+    input_tokens: int
+    output_tokens: int
+    attempts: tuple[Attempt, ...] = ()
+
+
+# usage.iterations entry types that are a model attempt at the message.
+_ATTEMPT_TYPES = ("message", "fallback_message")
+
+
+def usage_from_message(usage: Any, requested_model: str) -> Usage:
+    """Usage of a reply, from ``usage.iterations`` when the API sends it."""
+    iterations = getattr(usage, "iterations", None) or []
+    attempts = tuple(
+        Attempt(
+            model=getattr(entry, "model", None) or requested_model,
+            input_tokens=entry.input_tokens,
+            output_tokens=entry.output_tokens,
+        )
+        for entry in iterations
+        if getattr(entry, "type", None) in _ATTEMPT_TYPES
+    )
+    if not attempts:
+        return Usage(usage.input_tokens, usage.output_tokens)
+    return Usage(
+        input_tokens=sum(a.input_tokens for a in attempts),
+        output_tokens=sum(a.output_tokens for a in attempts),
+        attempts=attempts,
+    )
 
 
 @dataclass(frozen=True)
@@ -136,7 +179,7 @@ def call_claude(
 
     text = "".join(block.text for block in message.content if block.type == "text")
     brief = parse_brief(text)
-    usage = Usage(message.usage.input_tokens, message.usage.output_tokens)
+    usage = usage_from_message(message.usage, model)
     return LLMResult(brief=brief, model=message.model, usage=usage, source="api"), text
 
 
@@ -153,6 +196,10 @@ def save_recording(path: str | Path, result: LLMResult, raw_text: str) -> None:
         else {
             "input_tokens": result.usage.input_tokens,
             "output_tokens": result.usage.output_tokens,
+            "attempts": [
+                {"model": a.model, "input_tokens": a.input_tokens, "output_tokens": a.output_tokens}
+                for a in result.usage.attempts
+            ],
         },
         "response": json.loads(raw_text),
     }
@@ -176,7 +223,16 @@ def load_replay(path: str | Path) -> LLMResult:
     usage = data.get("usage")
     try:
         replay_usage = (
-            Usage(int(usage["input_tokens"]), int(usage["output_tokens"])) if usage else None
+            Usage(
+                int(usage["input_tokens"]),
+                int(usage["output_tokens"]),
+                tuple(
+                    Attempt(str(a["model"]), int(a["input_tokens"]), int(a["output_tokens"]))
+                    for a in usage.get("attempts") or []
+                ),
+            )
+            if usage
+            else None
         )
     except (TypeError, KeyError, ValueError) as exc:
         raise LLMError(

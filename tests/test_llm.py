@@ -140,6 +140,52 @@ def test_record_then_replay_roundtrip(tmp_path):
     assert replayed.source == "replay"
 
 
+def fallback_client() -> FakeClient:
+    """A reply where claude-opus-5-5 declined mid-stream and claude-opus-5 answered."""
+    client = FakeClient(json.dumps(replay_brief()))
+    client._message.model = "claude-opus-5"
+    client._message.usage = SimpleNamespace(
+        input_tokens=12_500,  # top-level usage: only the attempt that produced the message
+        output_tokens=5_000,
+        iterations=[
+            SimpleNamespace(type="message", model=None, input_tokens=12_000, output_tokens=1_000),
+            SimpleNamespace(
+                type="fallback_message",
+                model="claude-opus-5",
+                input_tokens=12_500,
+                output_tokens=5_000,
+            ),
+        ],
+    )
+    return client
+
+
+def test_usage_sums_all_attempts_of_a_fallback_request():
+    result, _ = call_claude(parse_transcript(CALL), "claude-opus-5-5", client=fallback_client())
+    assert (result.usage.input_tokens, result.usage.output_tokens) == (24_500, 6_000)
+    assert [a.model for a in result.usage.attempts] == ["claude-opus-5-5", "claude-opus-5"]
+
+
+def test_report_prices_each_attempt_at_its_own_model():
+    from earnings_call_analyzer.pipeline import analyze_file
+
+    result = analyze_file(EXAMPLES / "fernhill_q3_fy2026.txt", client=fallback_client())
+    # By hand: opus-5-5 12,000 x $4/M + 1,000 x $20/M = $0.048 + $0.020 = $0.068;
+    # opus-5 12,500 x $5/M + 5,000 x $25/M = $0.0625 + $0.125 = $0.1875; total $0.2555.
+    # Top-level usage alone would give 12,500 x $5/M + 5,000 x $25/M = $0.19.
+    assert result.meta.generated_by == (
+        "Anthropic API, 24,500 input / 6,000 output tokens over 2 attempts "
+        "(claude-opus-5-5, claude-opus-5), about $0.26 at list prices"
+    )
+
+
+def test_recorded_attempts_survive_replay(tmp_path):
+    result, raw = call_claude(parse_transcript(CALL), "claude-opus-5-5", client=fallback_client())
+    path = tmp_path / "rec.json"
+    save_recording(path, result, raw)
+    assert load_replay(path).usage == result.usage
+
+
 def test_replay_rejects_wrong_format(tmp_path):
     path = tmp_path / "x.json"
     path.write_text(json.dumps({"response": {}}))

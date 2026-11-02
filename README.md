@@ -196,7 +196,7 @@ Cost = input tokens x input price + output tokens x output price. Output include
 | `claude-sonnet-5-5` | $2.00 | $10.00 | $0.05 - $0.13 | $0.07 - $0.15 |
 | `claude-haiku-5-5` | $0.10 | $0.50 | $0.003 - $0.007 | $0.004 - $0.007 |
 
-The ranges assume 4,000 to 12,000 output tokens. These are estimates from `pricing.py`, not measured bills: I have not run the tool against the live API for this README. Check current prices before relying on them; after a real run the report shows the actual token counts returned by the API.
+The ranges assume 4,000 to 12,000 output tokens. These are estimates from `pricing.py`, not measured bills: I have not run the tool against the live API for this README. Check current prices before relying on them; after a real run the report shows the actual token counts returned by the API. If the server-side fallback ran (the first model declined and another one answered), the top-level token counts of the reply cover only the final attempt, so the report sums the per-attempt counts in `usage.iterations` and prices each attempt at the model that ran it. An attempt that declined before producing output is counted too; whether Anthropic bills it is set by their refusal billing rules, so in that case the figure can be slightly high. This fallback path is covered by a test with a mocked reply, not by a live run.
 
 ## Key assumptions
 
