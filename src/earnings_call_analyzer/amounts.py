@@ -18,7 +18,7 @@ Nothing here knows about transcripts or reports; it only turns text into
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 # A number with an optional currency sign ($, euro, pound) in front: "$1,210.5", "15".
 _NUMBER = re.compile(r"(?P<currency>[$\u20ac\u00a3])?(?P<number>\d+(?:,\d{3})*(?:\.\d+)?)")
@@ -145,9 +145,62 @@ def find_amounts(text: str) -> list[Amount]:
     return amounts
 
 
+# What may stand between the two ends of a range: "$1.6 to $1.7 billion", "4%-6%".
+RANGE_JOIN = re.compile(r"\s*(?:to|and|through|-|\u2013|\u2014)\s*", re.IGNORECASE)
+
+
+def share_range_units(text: str, amounts: list[Amount]) -> list[Amount]:
+    """Give the first end of a shorthand range the unit and currency of the second.
+
+    "$1.62 to $1.66 billion" is read by :func:`find_amounts` as 1.62 (no unit) and
+    1.66 billion; a reader means 1.62 billion. Only amounts joined by "to", "-",
+    "and" or "through" are treated as a range, and an end keeps a unit it already has.
+    """
+    shared = list(amounts)
+    for i in range(len(shared) - 1, 0, -1):
+        first, second = shared[i - 1], shared[i]
+        if not RANGE_JOIN.fullmatch(text[first.end : second.start]):
+            continue
+        unit = first.unit or second.unit
+        currency = first.currency or second.currency
+        if (unit, currency) != (first.unit, first.currency):
+            shared[i - 1] = replace(first, unit=unit, currency=currency)
+        if not second.currency and currency:
+            shared[i] = replace(second, currency=currency)
+    return shared
+
+
+def same_amount(claimed: Amount, source: Amount) -> bool:
+    """True if ``claimed`` states the amount ``source`` states, units included.
+
+    * Two scale words are compared in millions: "$1,620 million" = "$1.62 billion",
+      but "$1.62 million" != "$1.62 billion".
+    * Otherwise the values must be equal and the units must agree; a side with no
+      unit at all ("1.08", "0.9 times") is taken to agree with any unit.
+    * Two different currency signs never match.
+    """
+    if claimed.currency and source.currency and claimed.currency != source.currency:
+        return False
+    claimed_m, source_m = claimed.in_millions(), source.in_millions()
+    if claimed_m is not None and source_m is not None:
+        return claimed_m == source_m
+    if claimed.unit and source.unit and claimed.unit != source.unit:
+        return False
+    return claimed.value == source.value
+
+
 def signed_numbers(text: str) -> list[float]:
     """Just the signed values: '$1,210.5 million, down -3%' -> [1210.5, -3.0]."""
     return [amount.value for amount in find_amounts(text)]
 
 
-__all__ = ["NEGATIVE_WORDING", "SCALE_TO_MILLIONS", "Amount", "find_amounts", "signed_numbers"]
+__all__ = [
+    "NEGATIVE_WORDING",
+    "RANGE_JOIN",
+    "SCALE_TO_MILLIONS",
+    "Amount",
+    "find_amounts",
+    "same_amount",
+    "share_range_units",
+    "signed_numbers",
+]

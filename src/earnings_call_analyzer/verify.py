@@ -34,13 +34,20 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from difflib import SequenceMatcher
 from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel
 
-from .amounts import NEGATIVE_WORDING, find_amounts, signed_numbers
+from .amounts import (
+    NEGATIVE_WORDING,
+    Amount,
+    find_amounts,
+    same_amount,
+    share_range_units,
+    signed_numbers,
+)
 from .schema import AnalystQuestion, Brief, Evidence, GuidanceItem, HeadlineFigure, Risk, Tone
 from .transcript import Paragraph, Transcript
 
@@ -387,24 +394,29 @@ def extract_numbers(text: str) -> list[float]:
     return signed_numbers(text)
 
 
-def _numbers_missing(claimed: str, source_text: str) -> list[float]:
-    """Numbers in the model's summary that the source paragraph does not contain.
+def _numbers_missing(claimed: str, source_text: str) -> list[Amount]:
+    """Amounts in the model's summary that the source paragraph does not contain.
 
-    "$1,620 million" is found in a paragraph that says "$1.62 billion" (same amount in
-    millions). "-3%" is found in a paragraph that says "a decline of 3%", because the
-    sign can be carried by the wording instead of a minus sign.
+    The unit is part of the amount: "$1,620 million" is found in a paragraph that says
+    "$1.62 billion" (same amount in millions), "$1.62 million" is not. "-3%" is found
+    in a paragraph that says "a decline of 3%", because the sign can be carried by the
+    wording instead of a minus sign. See :func:`.amounts.same_amount`.
     """
-    source = find_amounts(source_text)
-    available = {a.value for a in source} | {
-        m for a in source if (m := a.in_millions()) is not None
-    }
+    source = share_range_units(source_text, find_amounts(source_text))
     if NEGATIVE_WORDING.search(source_text):
-        available |= {-value for value in available}
-    missing = []
-    for amount in find_amounts(claimed):
-        if amount.value not in available and amount.in_millions() not in available:
-            missing.append(amount.value)
-    return missing
+        source += [replace(a, value=-a.value) for a in source]
+    return [
+        amount
+        for amount in share_range_units(claimed, find_amounts(claimed))
+        if not any(same_amount(amount, s) for s in source)
+    ]
+
+
+def _describe_amount(amount: Amount) -> str:
+    """'1.62 million', '41%', '0.5 pp', '$0.81' - the amount as the warning shows it."""
+    unit = amount.unit if amount.unit in ("", "%", "x") else f" {amount.unit}"
+    sign = "-" if amount.value < 0 else ""
+    return f"{sign}{amount.currency}{abs(amount.value):g}{unit}"
 
 
 # --- Checking a whole brief -------------------------------------------------------------
@@ -485,7 +497,7 @@ def _number_warnings(
     missing = _numbers_missing(claimed, _source_text(check, transcript))
     if not missing:
         return []
-    shown = ", ".join(f"{n:g}" for n in missing)
+    shown = ", ".join(_describe_amount(a) for a in missing)
     return [f"{field} contains {shown}, which does not appear in {check.found_id}."]
 
 

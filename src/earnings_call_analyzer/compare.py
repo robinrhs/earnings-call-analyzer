@@ -22,7 +22,7 @@ from typing import Literal, TypeVar
 
 from pydantic import BaseModel
 
-from .amounts import NEGATIVE_WORDING, Amount, find_amounts
+from .amounts import NEGATIVE_WORDING, RANGE_JOIN, Amount, find_amounts
 from .schema import GuidanceItem, HeadlineFigure, Risk, ToneLabel
 from .verify import Checked, VerifiedBrief
 
@@ -44,8 +44,6 @@ MAINTAINED_TOLERANCE = 0.005
 # are "the same risk"; below it, a pairing rests on the category alone and says so.
 TITLE_MATCH = 0.3
 
-# What may stand between the two ends of a range: "$1.6 to $1.7 billion", "4%-6%".
-_RANGE_JOIN = re.compile(r"\s*(?:to|and|through|-|\u2013|\u2014)\s*", re.IGNORECASE)
 _STOPWORDS = {"the", "of", "for", "full", "year", "guidance", "total", "and", "a"}
 
 
@@ -150,7 +148,7 @@ def parse_guidance(text: str, metric: str = "") -> GuidanceRange | None:
     amounts = find_amounts(text)
     for i, first in enumerate(amounts):
         second = amounts[i + 1] if i + 1 < len(amounts) else None
-        if second is not None and not _RANGE_JOIN.fullmatch(text[first.end : second.start]):
+        if second is not None and not RANGE_JOIN.fullmatch(text[first.end : second.start]):
             second = None
         unit = first.unit or (second.unit if second else "")
         currency = first.currency or (second.currency if second else "")

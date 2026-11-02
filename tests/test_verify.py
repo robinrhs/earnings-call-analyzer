@@ -376,6 +376,51 @@ def test_number_warning_understands_scale_and_sign():
     assert result.headline_figures[0].warnings == []
 
 
+def test_number_warning_catches_wrong_scale_in_guidance(transcript):
+    # P003 says "$1.62 billion to $1.66 billion". The raw numbers 1.62 and 1.66 are
+    # there, but "$1.62 million" is a thousand times smaller and must be flagged.
+    guidance = GuidanceItem(
+        metric="Revenue",
+        period="FY2026",
+        current="$1.62 million to $1.66 million",
+        prior=None,
+        direction="raised",
+        evidence=ev("P003", "We are raising our fiscal 2026 revenue guidance"),
+    )
+    result = verify_brief(make_brief(guidance=[guidance]), transcript)
+    assert result.guidance[0].status == "verified"
+    assert result.guidance[0].warnings == [
+        "Guidance contains $1.62 million, $1.66 million, which does not appear in P003."
+    ]
+
+
+def test_number_warning_catches_wrong_scale_in_figure_value(transcript):
+    # P001 says "$412.3 million"; "$412.3 billion" is the same digits, 1,000x larger.
+    figure = make_brief().headline_figures[0].model_copy(update={"value": "$412.3 billion"})
+    result = verify_brief(make_brief(headline_figures=[figure]), transcript)
+    assert result.headline_figures[0].warnings == [
+        "Value contains $412.3 billion, which does not appear in P001."
+    ]
+
+
+def test_number_check_reads_shorthand_ranges_in_the_source():
+    # "$1.62 to $1.66 billion": the first end carries the unit of the second.
+    t = parse_transcript(
+        "Prepared Remarks\n\nJane Doe -- CFO\n\n"
+        "We now guide revenue to a range of $1.62 to $1.66 billion for fiscal 2026.\n"
+    )
+    guidance = GuidanceItem(
+        metric="Revenue",
+        period="FY2026",
+        current="$1,620 million to $1,660 million",
+        prior=None,
+        direction="raised",
+        evidence=ev("P001", "We now guide revenue to a range of $1.62 to $1.66 billion"),
+    )
+    result = verify_brief(make_brief(headline_figures=[], guidance=[guidance]), t, policy="flag")
+    assert result.guidance[0].warnings == []
+
+
 def test_number_in_guidance_not_in_source_paragraph_is_warned(transcript):
     result = verify_brief(make_brief(), transcript)
     warnings = result.guidance[0].warnings
